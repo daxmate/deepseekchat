@@ -1,4 +1,3 @@
 pyside6
 requests
 openai
-pyperclip

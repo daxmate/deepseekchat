@@ -9,7 +9,6 @@ from deepseekchat import Ui_MainWindow
 from PySide6.QtWidgets import QApplication, QMainWindow
 from PySide6.QtCore import Qt, QEvent
 import copy
-import pyperclip
 import time
 import json
 
@@ -40,6 +39,7 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
         self.client = OpenAI(api_key=self.deepseek_api_key, base_url="https://api.deepseek.com")
 
         self.response = None
+        self.final_response = None
         config = load_config()
         if config:
             self.messages = [
@@ -53,8 +53,8 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
                 },
                 {
                     "role": "user",
-                    "content": config['prompts']['email_reply']['user_template'].format(
-                        mail_content = '\n' + self.mail_content + '\n',
+                    "content": config['prompts']['email_reply']['user'].format(
+                        mail_content = self.mail_content,
                     ),
                 },
             ]
@@ -159,25 +159,25 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
     def read_stream(self):
         # 实现流式响应处理
         try:
-            full_response = ""
-            self.messages.append({"role": "assistant", "content": full_response})
+            self.final_response = "回复邮件如下：\n"
+            self.messages.append({"role": "assistant", "content": self.final_response})
             for chunk in self.response:
                 # 检查是否有内容
                 if chunk.choices and chunk.choices[0].delta and chunk.choices[0].delta.content:
                     content = chunk.choices[0].delta.content
-                    full_response += content
+                    self.final_response += content
                     # 更新UI显示
-                    self.messages[-1]["content"] = full_response
+                    self.messages[-1]["content"] = self.final_response
                     self.update_output_edit(self.messages)
                     # 确保UI及时更新
                     QApplication.processEvents()
-            pyperclip.copy(full_response)
             self.send_button.setEnabled(True)
 
         except Exception as e:
             self.log(f"流式响应处理错误: {str(e)}")
 
     def closeEvent(self, event):
+        print(self.final_response[8:])
         time.sleep(0.5)
         super().closeEvent(event)
 
