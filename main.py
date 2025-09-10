@@ -3,6 +3,8 @@ from pyexpat.errors import messages
 
 import requests
 import sys
+
+from PySide6.QtGui import QIcon
 from openai import OpenAI
 import os
 from deepseekchat import Ui_MainWindow
@@ -11,6 +13,7 @@ from PySide6.QtCore import Qt, QEvent
 import copy
 import time
 import json
+import dsc
 
 # 修复配置文件路径处理逻辑
 if sys.platform == 'darwin':
@@ -196,6 +199,7 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setWindowIcon(QIcon(":/icons/icon_mail_chat.svg"))
     win = DeepSeekChat()
     win.show()
     sys.exit(app.exec())
