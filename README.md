@@ -95,6 +95,29 @@ cat email.txt | python main.py
 4. 实时查看生成的回复内容
 5. 关闭窗口时，最终回复会自动输出到标准输出
 
+### 从不同环境运行的说明
+程序设计为可从macOS的Automator中加载，因此包含了从标准输入(stdin)读取邮件内容的代码。如果您直接从程序自身运行（而非通过Automator或管道提供输入），需要进行以下处理：
+
+macOS和Linux：将输入重定向到/dev/null
+
+```
+
+bash
+python main.py < /dev/null
+```
+
+Windows：将输入重定向到NUL
+```cmd
+python main.py < NUL
+```
+在PyCharm中运行：需要在运行配置中配置输入重定向，或者修改运行配置以避免程序等待标准输入。具体方法是：
+
+1. 打开运行配置（Run > Edit Configurations）
+2. 在配置中找到"Execution"部分
+3. 选中"Redirect input from"选项
+4. 对于macOS/Linux，输入"/dev/null"；对于Windows，输入"NUL"
+
+
 ### 快捷键
 
 - Enter：发送消息并获取回复
