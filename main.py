@@ -13,7 +13,7 @@ from PySide6.QtCore import Qt, QEvent
 import copy
 import time
 import json
-import dsc
+from resources import dsc
 
 # 修复配置文件路径处理逻辑
 if sys.platform == 'darwin':
