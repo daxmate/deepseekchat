@@ -1,10 +1,10 @@
-# DeepSeek邮件助手
+# DeepSeekChat
 
-一个基于DeepSeek API的智能邮件回复助手，使用PySide6构建的GUI应用程序。
+一个基于DeepSeek API的桌面应用，使用PySide6构建的GUI应用程序。在macOS上配合自动化（Automator）实现与应用的互动。目前已经实现与Mail.app的集成，用户可以在Mail.app中选中邮件，点击右键，选择“Services” -> “DeepSeekChat”，即可将选中的邮件内容发送到DeepSeekChat应用进行处理。
 
 ## 项目概述
 
-DeepSeek邮件助手是一个专为提高邮件处理效率而设计的工具，它能够：
+DeepSeekChat目前支持与Mail.app的集成，用户可以在Mail.app中选中邮件，点击右键，选择“Services” -> “DeepSeekChat”，即可将选中的邮件内容发送到DeepSeekChat应用进行处理。
 
 - 从标准输入读取邮件内容
 - 通过DeepSeek API生成专业的邮件回复
@@ -21,6 +21,7 @@ DeepSeek邮件助手是一个专为提高邮件处理效率而设计的工具，
   项目依赖以下Python库：
 
 - pyside6：用于构建GUI界面
+- pyside6-stub: 用于开发环境中提供更好的IDE自动补全、类型检查等功能
 - requests：用于HTTP请求
 - openai：用于与DeepSeek API交互
 
@@ -29,8 +30,8 @@ DeepSeek邮件助手是一个专为提高邮件处理效率而设计的工具，
 ### 1. 克隆项目
 
 ```bash
-git clone https://your-repository-url/deepseek-email-assistant.git
-cd deepseek-email-assistant
+git clone https:/github.com/daxmate/deepseekchat.git
+cd deepseekchat
 ```
 
 ### 2. 创建虚拟环境
