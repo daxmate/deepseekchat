@@ -122,24 +122,24 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
         # 其他事件交给默认处理
         return super().eventFilter(obj, event)
 
-    def update_output_edit(self, messages):
+    def update_output_edit(self, msg):
         self.output_edit.clear()
         text = ""
-        for message in messages:
+        for message in msg:
             for key, val in message.items():
                 text += key + ":\t" + val + "\n"
         self.output_edit.setText(text)
         self.output_edit.verticalScrollBar().setValue(self.output_edit.verticalScrollBar().maximum())
 
     def on_input_edit_text_changed(self):
-        messages = copy.deepcopy(self.messages)
-        if messages[-1]["role"] == "user":
-            messages[-1]["content"] = self.messages[-1][
+        msg = copy.deepcopy(self.messages)
+        if msg[-1]["role"] == "user":
+            msg[-1]["content"] = self.messages[-1][
                                           "content"] + "请在回复中包含以下内容：\n" + self.input_edit.toPlainText()
         else:
-            messages.append({"role": "user", "content": "请在回复中包含以下内容：\n" + self.input_edit.toPlainText()})
+            msg.append({"role": "user", "content": "请在回复中包含以下内容：\n" + self.input_edit.toPlainText()})
 
-        self.update_output_edit(messages)
+        self.update_output_edit(msg)
 
     def log(self, message):
         self.messages.append({"role": "log", "content": message + "\n"})
@@ -147,17 +147,17 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
         self.output_edit.verticalScrollBar().setValue(self.output_edit.verticalScrollBar().maximum())
 
     def trim_log_message(self):
-        messages = []
+        msg = []
         for message in self.messages:
             if message["role"] != "log":
-                messages.append(message)
-        return messages
+                msg.append(message)
+        return msg
 
     def on_send_button_clicked(self):
         self.send_button.setEnabled(False)
         self.messages[1]["content"] += self.input_edit.toPlainText()
-        messages = self.trim_log_message()
-        self.update_output_edit(messages)
+        msg = self.trim_log_message()
+        self.update_output_edit(msg)
         self.input_edit.clear()
         self.start_stream()
 
@@ -182,12 +182,12 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
             # 清空之前的输出
             self.log("正在获取响应...")
 
-            messages = self.trim_log_message()
+            msg = self.trim_log_message()
 
             # 调用API获取流式响应
             self.response = self.client.chat.completions.create(
                 model="deepseek-chat",
-                messages=messages,
+                messages=msg,
                 stream=True
             )
             self.read_stream()
