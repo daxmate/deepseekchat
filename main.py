@@ -108,12 +108,10 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
     def on_input_edit_text_changed(self):
         messages = copy.deepcopy(self.messages)
         if messages[-1]["role"] == "user":
-            messages[-1]["content"] += self.input_edit.toPlainText()
+            messages[-1]["content"] = self.messages[-1][
+                                          "content"] + "请在回复中包含以下内容：\n" + self.input_edit.toPlainText()
         else:
-            messages.append({"role": "user", "content": self.input_edit.toPlainText()})
-
-        if self.input_edit.toPlainText():
-            messages[-1]["content"] += "请在回复中包含以下内容：\n" + self.input_edit.toPlainText()
+            messages.append({"role": "user", "content": "请在回复中包含以下内容：\n" + self.input_edit.toPlainText()})
 
         self.update_output_edit(messages)
 
