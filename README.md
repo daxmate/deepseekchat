@@ -156,6 +156,46 @@ API调用相关代码位于`start_stream`和`read_stream`方法中
 配置文件需要手动创建或由程序首次运行时自动生成
 程序会在关闭时输出最终回复内容，请确保正确捕获输出
 
+
+## 打包应用
+
+使用PyInstaller可以将Python应用程序打包成独立的可执行文件或应用程序包，便于在没有Python环境的系统上运行。
+
+### 1. 安装PyInstaller
+
+```bash
+pip install pyinstaller
+```
+
+### 2. 打包为可执行文件
+
+在项目根目录下执行以下命令：
+
+```bash
+pyinstaller --onefile --windowed --name "DeepSeekChat" --icon=your_icon.ico main.py
+```
+
+参数说明：
+- `--windowed`：创建窗口化应用程序（不显示控制台窗口）
+- `--name`：指定输出的应用程序名称
+- `--icon`：指定应用程序图标（可选，需要提供.ico文件）
+
+### 3. macOS 特定打包说明
+
+在macOS上，可以打包成.app应用程序包：
+
+```bash
+pyinstaller --windowed --name "DeepSeekChat" --icon=your_icon.icns main.py
+```
+
+打包完成后，您可以在`dist`目录下找到生成的`.app`文件。
+
+### 4. 注意事项
+
+- 如果程序依赖外部资源（如配置文件模板），需要使用`--add-data`选项将其包含在打包中
+- 打包前请确保所有依赖项已正确安装
+- 在不同操作系统上打包的应用程序只能在相同操作系统上运行
+- 对于macOS，生成的.app文件可以通过Disk Utility制作成DMG安装包，提供更好的分发体验
 ## 许可证
 
 MIT License
