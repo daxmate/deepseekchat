@@ -80,6 +80,9 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
         self.connect_slots()
 
     def connect_slots(self):
+        """
+        连接信号槽
+        """
         self.input_edit.textChanged.connect(self.on_input_edit_text_changed)
         self.send_button.clicked.connect(self.on_send_button_clicked)
         self.input_edit.installEventFilter(self)
@@ -88,6 +91,9 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
 
     @staticmethod
     def get_app_instance() -> QApplication:
+        """
+        获取应用实例
+        """
         app_instance = QApplication.instance()
         if app_instance is None:
             app_instance = QApplication(sys.argv)
@@ -95,14 +101,20 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
 
     # 添加用于检测系统主题的代码
     def is_system_dark_mode(self):
+        """
+        检查系统是否为深色模式
+        """
         # 对于Qt 6.5+版本，可以使用colorScheme()方法
         if self.app_instance.styleHints() and hasattr(self.app_instance.styleHints(), 'colorScheme'):
             return self.app_instance.styleHints().colorScheme() == Qt.ColorScheme.Dark
         else:
             return False
 
-    # 添加事件过滤器处理回车发送和Shift+Enter换行
     def eventFilter(self, obj, event: QEvent):
+        """
+        事件过滤器，处理输入框的按键事件
+        处理回车发送和Shift+Enter换行
+        """
         # 检查事件是否是输入框的按键按下事件
         if obj is self.input_edit and event.type() == QEvent.Type.KeyPress:
             key_event = cast(QKeyEvent, event)
@@ -123,6 +135,9 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
         return super().eventFilter(obj, event)
 
     def update_output_edit(self, msg):
+        """
+        更新输出编辑框的内容
+        """
         self.output_edit.clear()
         text = ""
         for message in msg:
@@ -132,6 +147,9 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
         self.output_edit.verticalScrollBar().setValue(self.output_edit.verticalScrollBar().maximum())
 
     def on_input_edit_text_changed(self):
+        """
+        输入编辑框文本改变时的槽函数
+        """
         msg = copy.deepcopy(self.messages)
         if msg[-1]["role"] == "user":
             msg[-1]["content"] = self.messages[-1][
@@ -142,11 +160,17 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
         self.update_output_edit(msg)
 
     def log(self, message):
+        """
+        记录日志消息
+        """
         self.messages.append({"role": "log", "content": message + "\n"})
         self.update_output_edit(self.messages)
         self.output_edit.verticalScrollBar().setValue(self.output_edit.verticalScrollBar().maximum())
 
     def trim_log_message(self):
+        """
+        修剪日志消息
+        """
         msg = []
         for message in self.messages:
             if message["role"] != "log":
@@ -154,6 +178,9 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
         return msg
 
     def on_send_button_clicked(self):
+        """
+        发送按钮点击时的槽函数
+        """
         self.send_button.setEnabled(False)
         self.messages[1]["content"] += self.input_edit.toPlainText()
         msg = self.trim_log_message()
@@ -163,6 +190,9 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
 
     # api key存放在~/dotfiles/ai_api_keys中，内容为 export DEEPSEEK_API_KEY=sk-xxxxxxxxxxxxxx
     def get_deepseek_api_key(self):
+        """
+        获取Deepseek API密钥
+        """
         api_path = os.path.expanduser("~/dotfiles/ai_api_keys")
         if os.path.exists(api_path):
             with open(os.path.expanduser("~/dotfiles/ai_api_keys")) as f:
@@ -178,6 +208,9 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
             return
 
     def start_stream(self):
+        """
+        开始获取流式响应
+        """
         try:
             # 清空之前的输出
             self.log("正在获取响应...")
@@ -195,7 +228,9 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
             self.log(str(e))
 
     def read_stream(self):
-        # 实现流式响应处理
+        """
+        读取流式响应
+        """
         try:
             self.final_response = "回复邮件如下：\n"
             self.messages.append({"role": "assistant", "content": self.final_response})
@@ -215,12 +250,18 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
             self.log(f"流式响应处理错误: {str(e)}")
 
     def closeEvent(self, event):
+        """
+        关闭事件处理
+        """
         if self.final_response:
             print(self.final_response[8:])
         time.sleep(0.5)
         super().closeEvent(event)
 
     def list_deepseek_models(self):
+        """
+        获取Deepseek模型列表
+        """
         url = "https://api.deepseek.com/models"
 
         headers = {
@@ -236,7 +277,9 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
         return models
 
     def setup_theme(self):
-        """根据系统主题设置应用配色"""
+        """
+        根据系统主题设置应用配色
+        """
         is_dark = self.is_system_dark_mode()
 
         # 获取当前应用的调色板
