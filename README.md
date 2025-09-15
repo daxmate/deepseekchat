@@ -196,6 +196,8 @@ pyinstaller --windowed --name "DeepSeekChat" --icon=your_icon.icns main.py
 - 打包前请确保所有依赖项已正确安装
 - 在不同操作系统上打包的应用程序只能在相同操作系统上运行
 - 对于macOS，生成的.app文件可以通过Disk Utility制作成DMG安装包，提供更好的分发体验
+- 如果打包的APP不能正常运行，可以在终端中运行dist文件夹下面的没有.app后缀的可执行文件，以便显示更多的信息以便排错
+
 ## 许可证
 
 MIT License
