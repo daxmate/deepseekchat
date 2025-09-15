@@ -2,3 +2,4 @@ pyside6
 requests
 openai
 pyside6-stubs
+pyinstaller
