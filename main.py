@@ -3,8 +3,9 @@ from pyexpat.errors import messages
 
 import requests
 import sys
+from typing import cast, Optional
 
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QIcon, QKeyEvent
 from openai import OpenAI
 import os
 from deepseekchat import Ui_MainWindow
@@ -42,6 +43,14 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
         self.get_deepseek_api_key()
         self.setupUi(self)
         self.client = OpenAI(api_key=self.deepseek_api_key, base_url="https://api.deepseek.com")
+        self.app_instance = None
+        self.get_app_instance()
+        self.app_instance.styleHints().colorSchemeChanged.connect(self.setup_theme)
+
+
+        # 添加主题适应代码
+        self.setup_theme()
+        # 监听系统主题变化
 
         self.response = None
         self.final_response = None
@@ -76,15 +85,29 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
         self.input_edit.installEventFilter(self)
         self.update_output_edit(self.messages)
 
+    def get_app_instance(self):
+        self.app_instance = QApplication.instance()
+        if self.app_instance is None:
+            self.app_instance = QApplication(sys.argv)
+
+    # 添加用于检测系统主题的代码
+    def is_system_dark_mode(self):
+        # 对于Qt 6.5+版本，可以使用colorScheme()方法
+        if self.app_instance.styleHints() and hasattr(self.app_instance.styleHints(), 'colorScheme'):
+            return self.app_instance.styleHints().colorScheme() == Qt.ColorScheme.Dark
+        else:
+            return False
+
     # 添加事件过滤器处理回车发送和Shift+Enter换行
     def eventFilter(self, obj, event: QEvent):
         # 检查事件是否是输入框的按键按下事件
         if obj is self.input_edit and event.type() == QEvent.Type.KeyPress:
-            key = event.key()
+            key_event = cast(QKeyEvent, event)
+            key = key_event.key()
             # 判断是否按下了回车键
             if key == Qt.Key.Key_Enter or key == Qt.Key.Key_Return:
                 # 判断是否同时按下了Shift键
-                if event.modifiers() & Qt.KeyboardModifier.ShiftModifier:
+                if key_event.modifiers() & Qt.KeyboardModifier.ShiftModifier:
                     # Shift+Enter：插入换行符
                     cursor = self.input_edit.textCursor()
                     cursor.insertText("\n")
@@ -208,6 +231,25 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
         # 返回结构里有 data 字段，是一个模型列表
         models = data.get("data", [])
         return models
+
+    def setup_theme(self):
+        """根据系统主题设置应用配色"""
+        is_dark = self.is_system_dark_mode()
+
+        # 获取当前应用的调色板
+        palette = self.app_instance.palette()
+
+        # 根据主题模式设置颜色
+        if is_dark:
+            # 暗色模式
+            self.output_edit.setStyleSheet("*{ background: #2d2d2d; color: #ffffff; }")
+            # 可以根据需要设置更多控件的样式
+        else:
+            # 亮色模式
+            self.output_edit.setStyleSheet("*{ background: #eeeeee; color: #000000; }")
+
+        # 设置全局调色板
+        self.app_instance.setPalette(palette)
 
 
 if __name__ == "__main__":
