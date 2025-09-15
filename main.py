@@ -40,17 +40,22 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
         self.mail_content = sys.stdin.read()
         self.deepseek_api_key = None
         self.output_edit = None
+        self.messages = []
         self.get_deepseek_api_key()
         self.setupUi(self)
         self.client = OpenAI(api_key=self.deepseek_api_key, base_url="https://api.deepseek.com")
         self.app_instance = self.get_app_instance()
 
-        # 添加主题适应代码
+        # 设置主题与系统主题一致
         self.setup_theme()
-        # 监听系统主题变化
 
         self.response = None
         self.final_response = None
+        self.init_config()
+
+        self.connect_slots()
+
+    def init_config(self):
         config = load_config()
         if config:
             self.messages = [
@@ -76,8 +81,6 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
                     "content": "你是一个专业的邮件回复助手",
                 }
             ]
-
-        self.connect_slots()
 
     def connect_slots(self):
         """
