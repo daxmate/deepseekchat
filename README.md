@@ -21,7 +21,7 @@ DeepSeekChat目前支持与Mail.app的集成，用户可以在Mail.app中选中�
   项目依赖以下Python库：
 
 - pyside6：用于构建GUI界面
-- pyside6-stub: 用于开发环境中提供更好的IDE自动补全、类型检查等功能
+- pyside6-stubs: 用于开发环境中提供更好的IDE自动补全、类型检查等功能
 - requests：用于HTTP请求
 - openai：用于与DeepSeek API交互
 
