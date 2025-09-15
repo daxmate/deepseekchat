@@ -1,4 +1,4 @@
 pyside6
 requests
 openai
-pyside6-stub
+pyside6-stubs
