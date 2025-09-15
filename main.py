@@ -194,6 +194,21 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
         time.sleep(0.5)
         super().closeEvent(event)
 
+    def list_deepseek_models(self):
+        url = "https://api.deepseek.com/models"
+
+        headers = {
+            "Authorization": f"Bearer {self.deepseek_api_key}",
+            "Content-Type": "application/json",
+        }
+        resp = requests.get(url, headers=headers)
+        if resp.status_code != 200:
+            raise RuntimeError(f"Request failed: {resp.status_code}, {resp.text}")
+        data = resp.json()
+        # 返回结构里有 data 字段，是一个模型列表
+        models = data.get("data", [])
+        return models
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
