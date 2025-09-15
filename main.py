@@ -43,10 +43,7 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
         self.get_deepseek_api_key()
         self.setupUi(self)
         self.client = OpenAI(api_key=self.deepseek_api_key, base_url="https://api.deepseek.com")
-        self.app_instance = None
-        self.get_app_instance()
-        self.app_instance.styleHints().colorSchemeChanged.connect(self.setup_theme)
-
+        self.app_instance = self.get_app_instance()
 
         # 添加主题适应代码
         self.setup_theme()
@@ -80,15 +77,21 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
                 }
             ]
 
+        self.connect_slots()
+
+    def connect_slots(self):
         self.input_edit.textChanged.connect(self.on_input_edit_text_changed)
         self.send_button.clicked.connect(self.on_send_button_clicked)
         self.input_edit.installEventFilter(self)
         self.update_output_edit(self.messages)
+        self.app_instance.styleHints().colorSchemeChanged.connect(self.setup_theme)
 
-    def get_app_instance(self):
-        self.app_instance = QApplication.instance()
-        if self.app_instance is None:
-            self.app_instance = QApplication(sys.argv)
+    @staticmethod
+    def get_app_instance() -> QApplication:
+        app_instance = QApplication.instance()
+        if app_instance is None:
+            app_instance = QApplication(sys.argv)
+        return app_instance
 
     # 添加用于检测系统主题的代码
     def is_system_dark_mode(self):
