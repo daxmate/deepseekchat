@@ -61,11 +61,7 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
             self.messages = [
                 {
                     "role": "system",
-                    "content": config['prompts']['email_reply']['system'].format(
-                        name=config['user_info']['name'],
-                        title=config['user_info']['title'],
-                        company=config['user_info']['company'],
-                    ),
+                    "content": config['prompts']['email_reply']['system'],
                 },
                 {
                     "role": "user",
@@ -156,7 +152,7 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
         msg = copy.deepcopy(self.messages)
         if msg[-1]["role"] == "user":
             msg[-1]["content"] = self.messages[-1][
-                                          "content"] + "请在回复中包含以下内容：\n" + self.input_edit.toPlainText()
+                                     "content"] + "请在回复中包含以下内容：\n" + self.input_edit.toPlainText()
         else:
             msg.append({"role": "user", "content": "请在回复中包含以下内容：\n" + self.input_edit.toPlainText()})
 
