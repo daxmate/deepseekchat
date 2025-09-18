@@ -150,11 +150,11 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
         输入编辑框文本改变时的槽函数
         """
         msg = copy.deepcopy(self.messages)
+        user_command = "请按邮件原文回复并包含以下信息：\n" + self.input_edit.toPlainText()
         if msg[-1]["role"] == "user":
-            msg[-1]["content"] = self.messages[-1][
-                                     "content"] + "请在回复中包含以下内容：\n" + self.input_edit.toPlainText()
+            msg[-1]["content"] = self.messages[-1]["content"] + user_command
         else:
-            msg.append({"role": "user", "content": "请在回复中包含以下内容：\n" + self.input_edit.toPlainText()})
+            msg.append({"role": "user", "content": user_command})
 
         self.update_output_edit(msg)
 
