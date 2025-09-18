@@ -19,6 +19,7 @@ import copy
 import time
 import requests
 from historylistview import HistoryListView
+from resources import dsc
 
 # 修复配置文件路径处理逻辑
 if sys.platform == 'darwin':
