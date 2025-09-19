@@ -11,7 +11,7 @@ from PySide6.QtCore import (
 from PySide6.QtGui import (
     QKeyEvent,
 )
-from deepseekchat import Ui_MainWindow
+from mainwindow_ui import Ui_MainWindow
 from openai import OpenAI
 from typing import cast
 import copy

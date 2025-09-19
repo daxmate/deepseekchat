@@ -139,7 +139,7 @@ python main.py < NUL
 如果需要修改界面，可以使用Qt Designer打开deepseekchat.ui文件，修改后重新生成Python代码：
 
 ```bash
-pyside6-uic deepseekchat.ui -o deepseekchat.py
+pyside6-uic mainwindow_ui.ui -o mainwindow_ui.py
 ```
 
 ### 添加新功能
