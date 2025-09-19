@@ -1,6 +1,5 @@
 import sys
 import os
-import json
 from PySide6.QtWidgets import (
     QMainWindow,
     QApplication,
@@ -20,28 +19,15 @@ import time
 import requests
 from historylistview import HistoryListView
 from resources import dsc
-
-# 修复配置文件路径处理逻辑
-if sys.platform == 'darwin':
-    config_dir = os.path.expanduser('~/Library/Application Support/DeepSeekChat')
-else:
-    config_dir = os.path.expanduser('~/.config/DeepSeekChat')
-CONFIG_PATH = os.path.join(config_dir, 'config.json')
-
-# 确保配置目录存在
-os.makedirs(config_dir, exist_ok=True)
+from platform import Platform
 
 
-# 加载配置文件
-def load_config():
-    if os.path.exists(CONFIG_PATH):
-        return json.load(open(CONFIG_PATH, 'r'))
-    return {}
 
 
-class DeepSeekChat(QMainWindow, Ui_MainWindow):
+class DeepSeekChat(QMainWindow, Ui_MainWindow, Platform):
     def __init__(self):
         super().__init__()
+        Platform.__init__(self)
         self.mail_content = sys.stdin.read()
         self.deepseek_api_key = None
         self.output_edit = None
@@ -61,7 +47,7 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow):
         self.connect_slots()
 
     def init_config(self):
-        config = load_config()
+        config = self.load_config()
         if config:
             self.messages = [
                 {
