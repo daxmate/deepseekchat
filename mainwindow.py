@@ -22,8 +22,6 @@ from resources import dsc
 from platform import Platform
 
 
-
-
 class DeepSeekChat(QMainWindow, Ui_MainWindow, Platform):
     def __init__(self):
         super().__init__()
@@ -252,19 +250,7 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow, Platform):
         """
         获取Deepseek模型列表
         """
-        url = "https://api.deepseek.com/models"
-
-        headers = {
-            "Authorization": f"Bearer {self.deepseek_api_key}",
-            "Content-Type": "application/json",
-        }
-        resp = requests.get(url, headers=headers)
-        if resp.status_code != 200:
-            raise RuntimeError(f"Request failed: {resp.status_code}, {resp.text}")
-        data = resp.json()
-        # 返回结构里有 data 字段，是一个模型列表
-        models = data.get("data", [])
-        return models
+        return self.client.models.list()
 
     def setup_theme(self):
         """
