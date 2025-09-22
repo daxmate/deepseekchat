@@ -50,3 +50,6 @@ class InputEditor(QTextEdit):
     def update_text(self):
         if self.histories:
             self.setText(self.histories[self.history_index])
+            cursor = self.textCursor()
+            cursor.movePosition(cursor.MoveOperation.End)
+            self.setTextCursor(cursor)
