@@ -6,10 +6,13 @@ from typing import cast
 
 class InputEditor(QTextEdit):
     send_requested = Signal()
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setPlaceholderText('"↑↓"输入历史导航 "⇧↩"换行 "↩"发送')
         self.installEventFilter(self)
+        self.histories = []
+        self.history_index = -1
 
     def eventFilter(self, obj, event: QEvent):
         """
@@ -27,8 +30,23 @@ class InputEditor(QTextEdit):
                     # Shift+Enter：插入换行符
                     cursor = self.textCursor()
                     cursor.insertText("\n")
-                    return True  # 事件已处理
                 else:
+                    self.histories.append(self.toPlainText())
                     self.send_requested.emit()
+        if obj is self and event.type() == QEvent.Type.KeyRelease:
+            key_event = cast(QKeyEvent, event)
+            key = key_event.key()
+            if key == Qt.Key.Key_Up:
+                if self.histories:
+                    self.history_index = (self.history_index - 1 + len(self.histories)) % len(self.histories)
+                    self.update_text()
+            elif key == Qt.Key.Key_Down:
+                if self.histories:
+                    self.history_index = (self.history_index + 1) % len(self.histories)
+                    self.update_text()
         # 其他事件交给默认处理
         return super().eventFilter(obj, event)
+
+    def update_text(self):
+        if self.histories:
+            self.setText(self.histories[self.history_index])
