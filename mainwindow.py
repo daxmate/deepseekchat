@@ -219,12 +219,6 @@ class MainWindow(QMainWindow, Ui_MainWindow, Platform):
         time.sleep(0.5)
         super().closeEvent(event)
 
-    def list_deepseek_models(self):
-        """
-        获取Deepseek模型列表
-        """
-        return self.client.models.list()
-
     def setup_theme(self):
         """
         根据系统主题设置应用配色
