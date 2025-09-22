@@ -74,8 +74,7 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow, Platform):
         """
         self.input_edit.textChanged.connect(self.on_input_edit_text_changed)
         self.send_button.clicked.connect(self.on_send_button_clicked)
-        self.input_edit.installEventFilter(self)
-        self.update_output_edit(self.messages)
+        self.update_output_edit()
         self.app_instance.styleHints().colorSchemeChanged.connect(self.setup_theme)
         self.input_edit.send_requested.connect(self.on_send_button_clicked)
 
@@ -100,37 +99,13 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow, Platform):
         else:
             return False
 
-    def eventFilter(self, obj, event: QEvent):
-        """
-        事件过滤器，处理输入框的按键事件
-        处理回车发送和Shift+Enter换行
-        """
-        # 检查事件是否是输入框的按键按下事件
-        if obj is self.input_edit and event.type() == QEvent.Type.KeyPress:
-            key_event = cast(QKeyEvent, event)
-            key = key_event.key()
-            # 判断是否按下了回车键
-            if key == Qt.Key.Key_Enter or key == Qt.Key.Key_Return:
-                # 判断是否同时按下了Shift键
-                if key_event.modifiers() & Qt.KeyboardModifier.ShiftModifier:
-                    # Shift+Enter：插入换行符
-                    cursor = self.input_edit.textCursor()
-                    cursor.insertText("\n")
-                    return True  # 事件已处理
-                else:
-                    # 单独Enter：触发发送
-                    self.on_send_button_clicked()
-                    return True  # 事件已处理
-        # 其他事件交给默认处理
-        return super().eventFilter(obj, event)
-
-    def update_output_edit(self, msg):
+    def update_output_edit(self):
         """
         更新输出编辑框的内容
         """
         self.output_edit.clear()
         text = ""
-        for message in msg:
+        for message in self.messages:
             for key, val in message.items():
                 text += key + ":\t" + val + "\n"
         self.output_edit.setText(text)
@@ -147,23 +122,23 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow, Platform):
         else:
             msg.append({"role": "user", "content": user_command})
 
-        self.update_output_edit(msg)
+        self.update_output_edit()
 
     def log(self, message):
         """
         记录日志消息
         """
         self.messages.append({"role": "log", "content": message + "\n"})
-        self.update_output_edit(self.messages)
+        self.update_output_edit()
         self.output_edit.verticalScrollBar().setValue(self.output_edit.verticalScrollBar().maximum())
 
-    def trim_log_message(self):
+    def trim_messages(self):
         """
         修剪日志消息
         """
         msg = []
         for message in self.messages:
-            if message["role"] != "log":
+            if message["role"] not in ["log", "reasoning"]:
                 msg.append(message)
         return msg
 
@@ -173,8 +148,8 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow, Platform):
         """
         self.send_button.setEnabled(False)
         self.messages[1]["content"] += self.input_edit.toPlainText()
-        msg = self.trim_log_message()
-        self.update_output_edit(msg)
+        msg = self.trim_messages()
+        self.update_output_edit()
         self.input_edit.clear()
         self.start_stream()
 
@@ -205,11 +180,11 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow, Platform):
             # 清空之前的输出
             self.log("正在获取响应...")
 
-            msg = self.trim_log_message()
+            msg = self.trim_messages()
 
             # 调用API获取流式响应
             self.response = self.client.chat.completions.create(
-                model="deepseek-chat",
+                model="deepseek-reasoner",
                 messages=msg,
                 stream=True
             )
@@ -223,15 +198,24 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow, Platform):
         """
         try:
             self.final_response = "回复邮件如下：\n"
+            self.reasoning_text = ""
+            self.messages.append({"role": "reasoning", "content": self.reasoning_text})
             self.messages.append({"role": "assistant", "content": self.final_response})
             for chunk in self.response:
                 # 检查是否有内容
-                if chunk.choices and chunk.choices[0].delta and chunk.choices[0].delta.content:
-                    content = chunk.choices[0].delta.content
-                    self.final_response += content
-                    # 更新UI显示
-                    self.messages[-1]["content"] = self.final_response
-                    self.update_output_edit(self.messages)
+                if chunk.choices and chunk.choices[0].delta:
+                    if chunk.choices[0].delta.content:
+                        content = chunk.choices[0].delta.content
+                        self.final_response += content
+                        # 更新UI显示
+                        self.messages[-1]["content"] = self.final_response
+                    else:
+                        if chunk.choices[0].delta.reasoning_content:
+                            reasoning_content = chunk.choices[0].delta.reasoning_content
+                            self.reasoning_text += reasoning_content
+                            self.messages[-2]["content"] = self.reasoning_text
+                    self.update_output_edit()
+
                     # 确保UI及时更新
                     QApplication.processEvents()
             self.send_button.setEnabled(True)
