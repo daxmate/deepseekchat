@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="1" column="0">
-     <widget class="QTextEdit" name="input_edit">
+     <widget class="InputEditor" name="input_edit">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -67,7 +67,7 @@
      <x>0</x>
      <y>0</y>
      <width>1000</width>
-     <height>37</height>
+     <height>24</height>
     </rect>
    </property>
   </widget>
@@ -90,6 +90,11 @@
    <class>HistoryListView</class>
    <extends>QListView</extends>
    <header>historylistview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>InputEditor</class>
+   <extends>QTextEdit</extends>
+   <header>inputeditor.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

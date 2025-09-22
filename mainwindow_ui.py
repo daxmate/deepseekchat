@@ -20,6 +20,7 @@ from PySide6.QtWidgets import (QApplication, QDockWidget, QGridLayout, QMainWind
     QTextEdit, QVBoxLayout, QWidget)
 
 from historylistview import HistoryListView
+from inputeditor import InputEditor
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -30,7 +31,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.input_edit = QTextEdit(self.centralwidget)
+        self.input_edit = InputEditor(self.centralwidget)
         self.input_edit.setObjectName(u"input_edit")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -68,7 +69,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1000, 37))
+        self.menubar.setGeometry(QRect(0, 0, 1000, 24))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")

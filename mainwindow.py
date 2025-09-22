@@ -19,6 +19,7 @@ import time
 import requests
 from historylistview import HistoryListView
 from resources import dsc
+from inputeditor import InputEditor
 from platform import Platform
 
 
@@ -76,6 +77,7 @@ class DeepSeekChat(QMainWindow, Ui_MainWindow, Platform):
         self.input_edit.installEventFilter(self)
         self.update_output_edit(self.messages)
         self.app_instance.styleHints().colorSchemeChanged.connect(self.setup_theme)
+        self.input_edit.send_requested.connect(self.on_send_button_clicked)
 
     @staticmethod
     def get_app_instance() -> QApplication:
