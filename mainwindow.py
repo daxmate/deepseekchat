@@ -23,7 +23,7 @@ from inputeditor import InputEditor
 from platform import Platform
 
 
-class DeepSeekChat(QMainWindow, Ui_MainWindow, Platform):
+class MainWindow(QMainWindow, Ui_MainWindow, Platform):
     def __init__(self):
         super().__init__()
         Platform.__init__(self)

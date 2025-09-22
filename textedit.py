@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QApplication, QTextEdit, QWidget, QVBoxLayout
 from PySide6.QtGui import QFont, QColor, QTextCharFormat, QTextCursor
 from PySide6.QtCore import Qt, QPoint
-from mainwindow import DeepSeekChat
+from mainwindow import MainWindow
 
 
 class TextEdit(QTextEdit):
@@ -17,7 +17,7 @@ class TextEdit(QTextEdit):
         self.connect_slots()
 
     def connect_slots(self):
-        app_instance = DeepSeekChat.get_app_instance()
+        app_instance = MainWindow.get_app_instance()
         app_instance.styleHints().colorSchemeChanged.connect(self.update_display)
 
     def mousePressEvent(self, event):

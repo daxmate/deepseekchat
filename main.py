@@ -5,14 +5,14 @@ import sys
 
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
-from mainwindow import DeepSeekChat
+from mainwindow import MainWindow
 
 
 def main():
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon(":/icons/icon_mail_chat.svg"))
     app.setApplicationName("DeepSeekChat")
-    win = DeepSeekChat()
+    win = MainWindow()
     win.show()
     sys.exit(app.exec())
 
