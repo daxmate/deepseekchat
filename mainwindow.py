@@ -1,26 +1,15 @@
 import sys
-import os
 from PySide6.QtWidgets import (
     QMainWindow,
     QApplication,
 )
 from PySide6.QtCore import (
     Qt,
-    QEvent,
-)
-from PySide6.QtGui import (
-    QKeyEvent,
 )
 from mainwindow_ui import Ui_MainWindow
-from openai import OpenAI
-from typing import cast
 import copy
 import time
-import requests
-from historylistview import HistoryListView
 from resources import dsc
-from inputeditor import InputEditor
-from outputtextedit import OutputTextEdit
 from platform import Platform
 
 
