@@ -176,8 +176,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """读取流式响应"""
         try:
             self.final_response = "回复邮件如下：\n"
-            self.reasoning_text = ""
-            self.messages.append({"role": "reasoning", "content": self.reasoning_text})
+            reasoning_text = ""
+            self.messages.append({"role": "reasoning", "content": reasoning_text})
             self.messages.append({"role": "assistant", "content": self.final_response})
 
             # 获取当前reasoning消息的索引（应该是倒数第二个）
@@ -204,7 +204,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                         self.messages[-1]["content"] = self.final_response
 
                         # 如果之前有reasoning内容但现在没有了，说明reasoning已经结束
-                        if not reasoning_ended and self.reasoning_text:
+                        if not reasoning_ended and reasoning_text:
                             reasoning_ended = True
                             # reasoning结束后立即折叠
                             if self.output_edit and hasattr(self.output_edit, 'message_folded_states'):
@@ -212,11 +212,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     else:
                         if has_reasoning_content:
                             reasoning_content = chunk.choices[0].delta.reasoning_content
-                            self.reasoning_text += reasoning_content
-                            self.messages[-2]["content"] = self.reasoning_text
+                            reasoning_text += reasoning_content
+                            self.messages[-2]["content"] = reasoning_text
                         else:
                             # 如果之前有reasoning内容但现在没有了，说明reasoning已经结束
-                            if not reasoning_ended and self.reasoning_text:
+                            if not reasoning_ended and reasoning_text:
                                 reasoning_ended = True
                                 # reasoning结束后立即折叠
                                 if self.output_edit and hasattr(self.output_edit, 'message_folded_states'):
