@@ -17,10 +17,11 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QDockWidget, QGridLayout, QMainWindow,
     QMenuBar, QPushButton, QSizePolicy, QStatusBar,
-    QTextEdit, QVBoxLayout, QWidget)
+    QVBoxLayout, QWidget)
 
 from historylistview import HistoryListView
 from inputeditor import InputEditor
+from outputtextedit import OutputTextEdit
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -52,7 +53,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.send_button, 1, 1, 1, 1)
 
-        self.output_edit = QTextEdit(self.centralwidget)
+        self.output_edit = OutputTextEdit(self.centralwidget)
         self.output_edit.setObjectName(u"output_edit")
         sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy2.setHorizontalStretch(0)

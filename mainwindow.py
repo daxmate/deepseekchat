@@ -20,6 +20,7 @@ import requests
 from historylistview import HistoryListView
 from resources import dsc
 from inputeditor import InputEditor
+from outputtextedit import OutputTextEdit
 from platform import Platform
 
 
@@ -29,7 +30,6 @@ class MainWindow(QMainWindow, Ui_MainWindow, Platform):
         Platform.__init__(self)
         self.mail_content = sys.stdin.read()
         self.api_key = self.deepseek_api_key
-        self.output_edit = None
         self.messages = []
         self.setupUi(self)
 
@@ -109,13 +109,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, Platform):
         """
         更新输出编辑框的内容
         """
-        self.output_edit.clear()
-        text = ""
-        for message in self.messages:
-            for key, val in message.items():
-                text += key + ":\t" + val + "\n"
-        self.output_edit.setText(text)
-        self.output_edit.verticalScrollBar().setValue(self.output_edit.verticalScrollBar().maximum())
+        self.output_edit.update_display(self.messages)
 
     def on_input_edit_text_changed(self):
         """
@@ -154,7 +148,6 @@ class MainWindow(QMainWindow, Ui_MainWindow, Platform):
         """
         self.send_button.setEnabled(False)
         self.messages[1]["content"] += self.input_edit.toPlainText()
-        msg = self.trim_messages()
         self.update_output_edit()
         self.input_edit.clear()
         self.start_stream()
@@ -180,33 +173,66 @@ class MainWindow(QMainWindow, Ui_MainWindow, Platform):
             self.log(str(e))
 
     def read_stream(self):
-        """
-        读取流式响应
-        """
+        """读取流式响应"""
         try:
             self.final_response = "回复邮件如下：\n"
             self.reasoning_text = ""
             self.messages.append({"role": "reasoning", "content": self.reasoning_text})
             self.messages.append({"role": "assistant", "content": self.final_response})
+            
+            # 获取当前reasoning消息的索引（应该是倒数第二个）
+            reasoning_index = len(self.messages) - 2
+            
+            # 在处理流式响应时，确保reasoning部分是展开的
+            if self.output_edit and hasattr(self.output_edit, 'message_folded_states'):
+                self.output_edit.message_folded_states[reasoning_index] = False  # False表示展开
+                
+            # 添加标志来跟踪reasoning是否已经结束
+            reasoning_ended = False
+            
             for chunk in self.response:
                 # 检查是否有内容
                 if chunk.choices and chunk.choices[0].delta:
+                    # 检查当前chunk是否包含reasoning内容
+                    has_reasoning_content = hasattr(chunk.choices[0].delta, 'reasoning_content') and chunk.choices[0].delta.reasoning_content
+                    
                     if chunk.choices[0].delta.content:
                         content = chunk.choices[0].delta.content
                         self.final_response += content
                         # 更新UI显示
                         self.messages[-1]["content"] = self.final_response
+                         
+                        # 如果之前有reasoning内容但现在没有了，说明reasoning已经结束
+                        if not reasoning_ended and self.reasoning_text:
+                            reasoning_ended = True
+                            # reasoning结束后立即折叠
+                            if self.output_edit and hasattr(self.output_edit, 'message_folded_states'):
+                                self.output_edit.message_folded_states[reasoning_index] = True  # True表示折叠
                     else:
-                        if chunk.choices[0].delta.reasoning_content:
+                        if has_reasoning_content:
                             reasoning_content = chunk.choices[0].delta.reasoning_content
                             self.reasoning_text += reasoning_content
                             self.messages[-2]["content"] = self.reasoning_text
+                        else:
+                            # 如果之前有reasoning内容但现在没有了，说明reasoning已经结束
+                            if not reasoning_ended and self.reasoning_text:
+                                reasoning_ended = True
+                                # reasoning结束后立即折叠
+                                if self.output_edit and hasattr(self.output_edit, 'message_folded_states'):
+                                    self.output_edit.message_folded_states[reasoning_index] = True  # True表示折叠
+                    
                     self.update_output_edit()
-
+                    
                     # 确保UI及时更新
                     QApplication.processEvents()
+            
+            # 确保在所有内容处理完毕后，如果reasoning还没折叠，就折叠它
+            if self.output_edit and hasattr(self.output_edit, 'message_folded_states'):
+                self.output_edit.message_folded_states[reasoning_index] = True  # True表示折叠
+                self.update_output_edit()  # 应用折叠状态
+            
             self.send_button.setEnabled(True)
-
+        
         except Exception as e:
             self.log(f"流式响应处理错误: {str(e)}")
 

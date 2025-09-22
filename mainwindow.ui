@@ -42,7 +42,7 @@
      </widget>
     </item>
     <item row="0" column="0" colspan="2">
-     <widget class="QTextEdit" name="output_edit">
+     <widget class="OutputTextEdit" name="output_edit">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -95,6 +95,11 @@
    <class>InputEditor</class>
    <extends>QTextEdit</extends>
    <header>inputeditor.h</header>
+  </customwidget>
+  <customwidget>
+   <class>OutputTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>outputtextedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
