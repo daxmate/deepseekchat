@@ -8,6 +8,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import (
     Qt,
     Signal,
+    QEvent,
 )
 from mainwindow_ui import Ui_MainWindow
 import copy
@@ -44,6 +45,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.final_response = None
         self.init_config()
 
+        self.last_message = None
+        self.statusBar().setMouseTracking(True)
+        self.statusBar().installEventFilter(self)
+
         self.connect_slots()
 
     def init_config(self):
@@ -77,8 +82,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.update_output_edit()
         self.app_instance.styleHints().colorSchemeChanged.connect(self.setup_theme)
         self.input_edit.send_requested.connect(self.on_send_button_clicked)
-        self.platform.error.connect(lambda e: self.statusBar().showMessage(str(e), 5000))
-        self.message_signal.connect(lambda message: self.statusBar().showMessage(str(message), 5000))
+        self.platform.error.connect(self.show_message_on_status_bar)
+        self.message_signal.connect(self.show_message_on_status_bar)
 
     @staticmethod
     def get_app_instance() -> QApplication:
@@ -160,6 +165,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         except Exception as e:
             self.message_signal.emit(str(e))
 
+    def show_message_on_status_bar(self, message):
+        """
+        在状态栏显示消息
+        """
+        self.last_message = message
+        self.statusBar().showMessage(message, 5000)
+
     def read_stream(self):
         """读取流式响应"""
         try:
@@ -233,6 +245,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             print(self.final_response[8:])
         time.sleep(0.5)
         super().closeEvent(event)
+
+    def eventFilter(self, obj, event):
+        if obj == self.statusBar() and event.type() == QEvent.Type.MouseButtonPress:
+            if self.last_message:
+                self.statusBar().showMessage(self.last_message, 5000)
+            return True
+        return super().eventFilter(obj, event)
 
     def setup_theme(self):
         """
