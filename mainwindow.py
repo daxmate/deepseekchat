@@ -1,10 +1,13 @@
 import sys
+
+from PySide6 import QtCore
 from PySide6.QtWidgets import (
     QMainWindow,
     QApplication,
 )
 from PySide6.QtCore import (
     Qt,
+    Signal,
 )
 from mainwindow_ui import Ui_MainWindow
 import copy
@@ -14,6 +17,8 @@ from platform import Platform
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
+    message_signal = Signal(str)
+
     def __init__(self):
         super().__init__()
         self.platform = Platform()
@@ -72,7 +77,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.update_output_edit()
         self.app_instance.styleHints().colorSchemeChanged.connect(self.setup_theme)
         self.input_edit.send_requested.connect(self.on_send_button_clicked)
-        self.platform.error.connect(self.log)
+        self.platform.error.connect(lambda e: self.statusBar().showMessage(str(e), 5000))
+        self.message_signal.connect(lambda message: self.statusBar().showMessage(str(message), 5000))
 
     @staticmethod
     def get_app_instance() -> QApplication:
@@ -114,21 +120,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.update_output_edit()
 
-    def log(self, message):
-        """
-        记录日志消息
-        """
-        self.messages.append({"role": "log", "content": message + "\n"})
-        self.update_output_edit()
-        self.output_edit.verticalScrollBar().setValue(self.output_edit.verticalScrollBar().maximum())
-
     def trim_messages(self):
         """
         修剪日志消息
         """
         msg = []
         for message in self.messages:
-            if message["role"] not in ["log", "reasoning"]:
+            if message["role"] not in ["reasoning"]:
                 msg.append(message)
         return msg
 
@@ -148,7 +146,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         try:
             # 清空之前的输出
-            self.log("正在获取响应...")
+            self.message_signal.emit("正在获取响应...")
 
             msg = self.trim_messages()
 
@@ -160,7 +158,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             )
             self.read_stream()
         except Exception as e:
-            self.log(str(e))
+            self.message_signal.emit(str(e))
 
     def read_stream(self):
         """读取流式响应"""
@@ -169,29 +167,30 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.reasoning_text = ""
             self.messages.append({"role": "reasoning", "content": self.reasoning_text})
             self.messages.append({"role": "assistant", "content": self.final_response})
-            
+
             # 获取当前reasoning消息的索引（应该是倒数第二个）
             reasoning_index = len(self.messages) - 2
-            
+
             # 在处理流式响应时，确保reasoning部分是展开的
             if self.output_edit and hasattr(self.output_edit, 'message_folded_states'):
                 self.output_edit.message_folded_states[reasoning_index] = False  # False表示展开
-                
+
             # 添加标志来跟踪reasoning是否已经结束
             reasoning_ended = False
-            
+
             for chunk in self.response:
                 # 检查是否有内容
                 if chunk.choices and chunk.choices[0].delta:
                     # 检查当前chunk是否包含reasoning内容
-                    has_reasoning_content = hasattr(chunk.choices[0].delta, 'reasoning_content') and chunk.choices[0].delta.reasoning_content
-                    
+                    has_reasoning_content = hasattr(chunk.choices[0].delta, 'reasoning_content') and chunk.choices[
+                        0].delta.reasoning_content
+
                     if chunk.choices[0].delta.content:
                         content = chunk.choices[0].delta.content
                         self.final_response += content
                         # 更新UI显示
                         self.messages[-1]["content"] = self.final_response
-                         
+
                         # 如果之前有reasoning内容但现在没有了，说明reasoning已经结束
                         if not reasoning_ended and self.reasoning_text:
                             reasoning_ended = True
@@ -210,21 +209,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                 # reasoning结束后立即折叠
                                 if self.output_edit and hasattr(self.output_edit, 'message_folded_states'):
                                     self.output_edit.message_folded_states[reasoning_index] = True  # True表示折叠
-                    
+
                     self.update_output_edit()
-                    
+
                     # 确保UI及时更新
                     QApplication.processEvents()
-            
+
             # 确保在所有内容处理完毕后，如果reasoning还没折叠，就折叠它
             if self.output_edit and hasattr(self.output_edit, 'message_folded_states'):
                 self.output_edit.message_folded_states[reasoning_index] = True  # True表示折叠
                 self.update_output_edit()  # 应用折叠状态
-            
+
             self.send_button.setEnabled(True)
-        
+
         except Exception as e:
-            self.log(f"流式响应处理错误: {str(e)}")
+            self.message_signal.emit(f"流式响应处理错误: {str(e)}")
 
     def closeEvent(self, event):
         """
