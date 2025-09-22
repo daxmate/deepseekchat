@@ -10,11 +10,13 @@ from PySide6.QtCore import (
     Signal,
     QEvent,
 )
+from PySide6.QtGui import QMouseEvent
 from mainwindow_ui import Ui_MainWindow
 import copy
 import time
 from resources import dsc
 from platform import Platform
+from typing import cast
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -247,10 +249,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().closeEvent(event)
 
     def eventFilter(self, obj, event):
+        """
+        过滤事件，用于处理状态栏点击事件
+        :param obj: 事件源对象
+        :param event: 事件对象
+        :return:bool - 如果事件已处理返回True，否则返回父类处理结果
+        """
         if obj == self.statusBar() and event.type() == QEvent.Type.MouseButtonPress:
-            if self.last_message:
+            mouse_button_press_event = cast(QMouseEvent, event)
+            if mouse_button_press_event.button() == Qt.MouseButton.LeftButton and self.last_message:
                 self.statusBar().showMessage(self.last_message, 5000)
-            return True
+                return True
         return super().eventFilter(obj, event)
 
     def setup_theme(self):
