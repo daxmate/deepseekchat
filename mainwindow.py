@@ -24,12 +24,12 @@ from outputtextedit import OutputTextEdit
 from platform import Platform
 
 
-class MainWindow(QMainWindow, Ui_MainWindow, Platform):
+class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
-        Platform.__init__(self)
+        self.platform = Platform()
         self.mail_content = sys.stdin.read()
-        self.api_key = self.deepseek_api_key
+        self.api_key = self.platform.deepseek_api_key
         self.messages = []
         self.setupUi(self)
 
@@ -37,7 +37,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, Platform):
         self.client = None
         if self.provider == "deepseek":
             from deepseek import DeepSeek
-            self.client = DeepSeek(api_key=self.deepseek_api_key)
+            self.client = DeepSeek(api_key=self.platform.deepseek_api_key)
 
         if not self.client:
             return
@@ -53,15 +53,15 @@ class MainWindow(QMainWindow, Ui_MainWindow, Platform):
         self.connect_slots()
 
     def init_config(self):
-        if self.config:
+        if self.platform.config:
             self.messages = [
                 {
                     "role": "system",
-                    "content": self.config['prompts']['email_reply']['system'],
+                    "content": self.platform.config['prompts']['email_reply']['system'],
                 },
                 {
                     "role": "user",
-                    "content": self.config['prompts']['email_reply']['user'].format(
+                    "content": self.platform.config['prompts']['email_reply']['user'].format(
                         mail_content=self.mail_content,
                     ),
                 },
@@ -83,6 +83,7 @@ class MainWindow(QMainWindow, Ui_MainWindow, Platform):
         self.update_output_edit()
         self.app_instance.styleHints().colorSchemeChanged.connect(self.setup_theme)
         self.input_edit.send_requested.connect(self.on_send_button_clicked)
+        self.platform.error.connect(self.log)
 
     @staticmethod
     def get_app_instance() -> QApplication:

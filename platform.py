@@ -2,9 +2,13 @@ import os
 import json
 import sys
 
+from PySide6.QtCore import QObject, Signal
 
-class Platform:
+
+class Platform(QObject):
+    error = Signal(str)
     def __init__(self):
+        super().__init__()
         if sys.platform == 'darwin':
             config_dir = os.path.expanduser('~/Library/Application Support/DeepSeekChat')
         else:
@@ -41,3 +45,7 @@ class Platform:
                         return key.strip()
         elif self.config:
             return self.config.get("DEEPSEEK_API_KEY", None)
+
+        if not self.deepseek_api_key:
+            self.error.emit("Deepseek API key not found. Please set it in the config file.")
+            return
