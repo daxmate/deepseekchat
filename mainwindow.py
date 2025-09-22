@@ -28,12 +28,19 @@ class MainWindow(QMainWindow, Ui_MainWindow, Platform):
         super().__init__()
         Platform.__init__(self)
         self.mail_content = sys.stdin.read()
-        self.deepseek_api_key = None
+        self.api_key = self.deepseek_api_key
         self.output_edit = None
         self.messages = []
-        self.get_deepseek_api_key()
         self.setupUi(self)
-        self.client = OpenAI(api_key=self.deepseek_api_key, base_url="https://api.deepseek.com")
+
+        self.provider = "deepseek"
+        self.client = None
+        if self.provider == "deepseek":
+            from deepseek import DeepSeek
+            self.client = DeepSeek(api_key=self.deepseek_api_key)
+
+        if not self.client:
+            return
         self.app_instance = self.get_app_instance()
 
         # 设置主题与系统主题一致
@@ -46,16 +53,15 @@ class MainWindow(QMainWindow, Ui_MainWindow, Platform):
         self.connect_slots()
 
     def init_config(self):
-        config = self.load_config()
-        if config:
+        if self.config:
             self.messages = [
                 {
                     "role": "system",
-                    "content": config['prompts']['email_reply']['system'],
+                    "content": self.config['prompts']['email_reply']['system'],
                 },
                 {
                     "role": "user",
-                    "content": config['prompts']['email_reply']['user'].format(
+                    "content": self.config['prompts']['email_reply']['user'].format(
                         mail_content=self.mail_content,
                     ),
                 },
@@ -152,25 +158,6 @@ class MainWindow(QMainWindow, Ui_MainWindow, Platform):
         self.update_output_edit()
         self.input_edit.clear()
         self.start_stream()
-
-    # api key存放在~/dotfiles/ai_api_keys中，内容为 export DEEPSEEK_API_KEY=sk-xxxxxxxxxxxxxx
-    def get_deepseek_api_key(self):
-        """
-        获取Deepseek API密钥
-        """
-        api_path = os.path.expanduser("~/dotfiles/ai_api_keys")
-        if os.path.exists(api_path):
-            with open(os.path.expanduser("~/dotfiles/ai_api_keys")) as f:
-                for line in f.readlines():
-                    _, name_key = line.split()
-                    name, key = name_key.split("=")
-                    if name.strip() == "DEEPSEEK_API_KEY":
-                        self.deepseek_api_key = key.strip()
-        else:
-            print("请在~/dotfiles/ai_api_keys中添加DEEPSEEK_API_KEY")
-            return
-        if not self.deepseek_api_key:
-            return
 
     def start_stream(self):
         """
