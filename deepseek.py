@@ -4,7 +4,7 @@ from PySide6.QtCore import (
     Signal,
 )
 from PySide6.QtWidgets import (
-    QApplication, QWidget,
+    QApplication, QWidget, QMainWindow,
 )
 
 from outputtextedit import OutputTextEdit
@@ -15,7 +15,7 @@ class DeepSeek(OpenAI, QObject):
     message_signal = Signal(str)
 
     def __init__(self, api_key: str, base_url="https://api.deepseek.com", mail_content: str = "",
-                 parent: QWidget = None):
+                 parent: QMainWindow = None):
         super().__init__(api_key=api_key, base_url=base_url)
         QObject.__init__(self)
         self.parent = parent
