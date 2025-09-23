@@ -49,6 +49,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.statusBar().installEventFilter(self)
 
         self.connect_slots()
+        self.setup_history()
 
     def connect_slots(self):
         """
@@ -181,3 +182,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         self.preferences = Preferences()
         self.preferences.show()
+
+    def setup_history(self):
+        self.historyListView.add_items(["hello", "world"])
