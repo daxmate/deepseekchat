@@ -127,8 +127,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         关闭事件处理
         """
-        if self.final_response:
-            print(self.final_response[8:])
+        if self.client.messages:
+            print(self.client.messages[-1]["content"][8:])
         time.sleep(0.5)
         super().closeEvent(event)
 
