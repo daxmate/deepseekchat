@@ -1,10 +1,8 @@
 import sys
 
-from PySide6 import QtCore
 from PySide6.QtWidgets import (
     QMainWindow,
     QApplication,
-    QMenu,
 )
 from PySide6.QtCore import (
     Qt,
