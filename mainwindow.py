@@ -4,13 +4,14 @@ from PySide6 import QtCore
 from PySide6.QtWidgets import (
     QMainWindow,
     QApplication,
+    QMenu,
 )
 from PySide6.QtCore import (
     Qt,
     Signal,
     QEvent,
 )
-from PySide6.QtGui import QMouseEvent
+from PySide6.QtGui import QMouseEvent, QAction
 from mainwindow_ui import Ui_MainWindow
 import copy
 import time
@@ -41,7 +42,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # 设置主题与系统主题一致
         self.setup_theme()
-
+        self.setup_menu()
 
         self.statusBar().setMouseTracking(True)
         self.statusBar().installEventFilter(self)
@@ -163,3 +164,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # 设置全局调色板
         self.app_instance.setPalette(palette)
+
+    def setup_menu(self):
+        menu_bar = self.menuBar()
+        app_menu = menu_bar.addMenu("Application")
+        pref_action = QAction("Preferences...", self)
+        pref_action.triggered.connect(self.preference)
+        pref_action.setMenuRole(QAction.MenuRole.PreferencesRole)
+        app_menu.addAction(pref_action)
+
+    def preference(self):
+        print("preference")
