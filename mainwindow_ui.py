@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QDockWidget, QGridLayout, QMainWindow,
-    QMenuBar, QPushButton, QSizePolicy, QStatusBar,
-    QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QDockWidget, QHBoxLayout, QMainWindow,
+    QMenuBar, QPushButton, QSizePolicy, QSplitter,
+    QStatusBar, QVBoxLayout, QWidget)
 
 from historylistview import HistoryListView
 from inputeditor import InputEditor
@@ -30,42 +30,56 @@ class Ui_MainWindow(object):
         MainWindow.resize(1000, 800)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.gridLayout = QGridLayout(self.centralwidget)
-        self.gridLayout.setObjectName(u"gridLayout")
-        self.input_edit = InputEditor(self.centralwidget)
-        self.input_edit.setObjectName(u"input_edit")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(1)
-        sizePolicy.setHeightForWidth(self.input_edit.sizePolicy().hasHeightForWidth())
-        self.input_edit.setSizePolicy(sizePolicy)
-        self.input_edit.setReadOnly(False)
-
-        self.gridLayout.addWidget(self.input_edit, 1, 0, 1, 1)
-
-        self.send_button = QPushButton(self.centralwidget)
-        self.send_button.setObjectName(u"send_button")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(1)
-        sizePolicy1.setHeightForWidth(self.send_button.sizePolicy().hasHeightForWidth())
-        self.send_button.setSizePolicy(sizePolicy1)
-
-        self.gridLayout.addWidget(self.send_button, 1, 1, 1, 1)
-
-        self.output_edit = OutputTextEdit(self.centralwidget)
+        self.horizontalLayout_2 = QHBoxLayout(self.centralwidget)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.splitter = QSplitter(self.centralwidget)
+        self.splitter.setObjectName(u"splitter")
+        self.splitter.setOrientation(Qt.Orientation.Vertical)
+        self.output_edit = OutputTextEdit(self.splitter)
         self.output_edit.setObjectName(u"output_edit")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(15)
-        sizePolicy2.setHeightForWidth(self.output_edit.sizePolicy().hasHeightForWidth())
-        self.output_edit.setSizePolicy(sizePolicy2)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(30)
+        sizePolicy.setHeightForWidth(self.output_edit.sizePolicy().hasHeightForWidth())
+        self.output_edit.setSizePolicy(sizePolicy)
         self.output_edit.setStyleSheet(u"#output_edit{\n"
 " background: #eeeeee;\n"
 "}")
         self.output_edit.setReadOnly(True)
+        self.splitter.addWidget(self.output_edit)
+        self.widget = QWidget(self.splitter)
+        self.widget.setObjectName(u"widget")
+        self.horizontalLayout = QHBoxLayout(self.widget)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.input_edit = InputEditor(self.widget)
+        self.input_edit.setObjectName(u"input_edit")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(1)
+        sizePolicy1.setHeightForWidth(self.input_edit.sizePolicy().hasHeightForWidth())
+        self.input_edit.setSizePolicy(sizePolicy1)
+        self.input_edit.setMinimumSize(QSize(0, 100))
+        self.input_edit.setMaximumSize(QSize(16777215, 160))
+        self.input_edit.setReadOnly(False)
 
-        self.gridLayout.addWidget(self.output_edit, 0, 0, 1, 2)
+        self.horizontalLayout.addWidget(self.input_edit)
+
+        self.send_button = QPushButton(self.widget)
+        self.send_button.setObjectName(u"send_button")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Maximum)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(1)
+        sizePolicy2.setHeightForWidth(self.send_button.sizePolicy().hasHeightForWidth())
+        self.send_button.setSizePolicy(sizePolicy2)
+        self.send_button.setMinimumSize(QSize(0, 100))
+        self.send_button.setMaximumSize(QSize(16777215, 160))
+
+        self.horizontalLayout.addWidget(self.send_button)
+
+        self.splitter.addWidget(self.widget)
+
+        self.horizontalLayout_2.addWidget(self.splitter)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
