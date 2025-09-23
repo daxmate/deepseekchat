@@ -47,6 +47,6 @@ class Platform(QObject):
         elif self.config:
             return self.config.get("DEEPSEEK_API_KEY", None)
 
-        self.error.emit("Deepseek API key not found. Please set it in the config file.")
+        self.error.emit(self.tr("Deepseek API key not found. Please set it in the config file."))
 
         return None

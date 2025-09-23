@@ -9,7 +9,7 @@ class OutputTextEdit(QTextEdit):
         super().__init__()
         self.parent = parent
         self.setReadOnly(True)
-        self.summary = "思考中……"
+        self.summary = self.tr("Thinking...")
         self.messages = None
         # 存储每个message的折叠状态
         self.message_folded_states = {}

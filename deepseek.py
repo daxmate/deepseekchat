@@ -46,7 +46,7 @@ class DeepSeek(OpenAI, QObject):
             self.messages = [
                 {
                     "role": "system",
-                    "content": "你是一个专业的邮件回复助手",
+                    "content": self.tr("You are a professional email reply assistant"),
                 }
             ]
 
@@ -72,7 +72,7 @@ class DeepSeek(OpenAI, QObject):
         """
         try:
             # 清空之前的输出
-            self.message_signal.emit("正在获取响应...")
+            self.message_signal.emit(self.tr("Sending messages..."))
 
             # 根据模型类型决定是否修剪消息
             if self.model == "deepseek-reasoner":
@@ -93,8 +93,8 @@ class DeepSeek(OpenAI, QObject):
     def read_stream(self, output_edit: OutputTextEdit):
         """读取流式响应"""
         try:
-            final_response = "回复邮件如下：\n"
-            
+            final_response = self.tr("Reply email as follows:\n")
+
             # 根据模型类型决定处理方式
             if self.model == "deepseek-reasoner":
                 # 处理推理模型的逻辑
@@ -156,7 +156,7 @@ class DeepSeek(OpenAI, QObject):
             else:
                 # 处理普通聊天模型的逻辑
                 self.messages.append({"role": "assistant", "content": final_response})
-                
+
                 for chunk in self.response:
                     # 检查是否有内容
                     if chunk.choices and chunk.choices[0].delta and chunk.choices[0].delta.content:
@@ -170,4 +170,4 @@ class DeepSeek(OpenAI, QObject):
                         QApplication.processEvents()
 
         except Exception as e:
-            self.message_signal.emit(f"流式响应处理错误: {str(e)}")
+            self.message_signal.emit(self.tr("Error processing streaming response: " + str(e)))

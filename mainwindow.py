@@ -97,7 +97,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         输入编辑框文本改变时的槽函数
         """
         msg = copy.deepcopy(self.client.messages)
-        user_command = "请按邮件原文回复并包含以下信息：\n" + self.input_edit.toPlainText()
+        user_command = self.tr(
+            "Please reply according to the original email and include the following information: \n") + self.input_edit.toPlainText()
         if msg[-1]["role"] == "user":
             msg[-1]["content"] = self.client.messages[-1]["content"] + user_command
         else:

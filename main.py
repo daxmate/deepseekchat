@@ -8,16 +8,22 @@ from PySide6.QtWidgets import QApplication
 from mainwindow import MainWindow
 from PySide6.QtCore import QLibraryInfo, QTranslator
 
+from resources.dsc import qt_resource_data
+
 
 def main():
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon(":/icons/icon_mail_chat.svg"))
     app.setApplicationName("DeepSeekChat")
     translation_path = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
-    translator = QTranslator()
-    ok = translator.load('qtbase_zh_CN', translation_path)
+    qt_translator = QTranslator()
+    ok = qt_translator.load('qtbase_zh_CN', translation_path)
     if ok:
-        app.installTranslator(translator)
+        app.installTranslator(qt_translator)
+    app_translator = QTranslator()
+    ok = app_translator.load('app_zh_CN.qm')
+    if ok:
+        app.installTranslator(app_translator)
     win = MainWindow()
     win.show()
     sys.exit(app.exec())

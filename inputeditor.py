@@ -9,7 +9,7 @@ class InputEditor(QTextEdit):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setPlaceholderText('"↑↓"输入历史导航 "⇧↩"换行 "↩"发送')
+        self.setPlaceholderText(self.tr('"↑↓" to navigate input history "⇧↩" to insert newline "↩" to send'))
         self.installEventFilter(self)
         self.histories = []
         self.history_index = -1
