@@ -176,5 +176,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         app_menu.addAction(pref_action)
 
     def preference(self):
+        """
+        打开偏好设置窗口
+        """
         self.preferences = Preferences()
         self.preferences.show()
