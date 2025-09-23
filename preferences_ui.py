@@ -18,15 +18,15 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QHBoxLayout, QListView, QSizePolicy,
     QSplitter, QStackedWidget, QWidget)
 
-class Ui_Form(object):
-    def setupUi(self, Form):
-        if not Form.objectName():
-            Form.setObjectName(u"Form")
-        Form.setWindowModality(Qt.WindowModality.ApplicationModal)
-        Form.resize(950, 639)
-        self.horizontalLayout = QHBoxLayout(Form)
+class Ui_Preferences(object):
+    def setupUi(self, Preferences):
+        if not Preferences.objectName():
+            Preferences.setObjectName(u"Preferences")
+        Preferences.setWindowModality(Qt.WindowModality.ApplicationModal)
+        Preferences.resize(950, 639)
+        self.horizontalLayout = QHBoxLayout(Preferences)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.splitter = QSplitter(Form)
+        self.splitter = QSplitter(Preferences)
         self.splitter.setObjectName(u"splitter")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(1)
@@ -50,7 +50,7 @@ class Ui_Form(object):
 
         self.horizontalLayout.addWidget(self.splitter)
 
-        self.stackedWidget = QStackedWidget(Form)
+        self.stackedWidget = QStackedWidget(Preferences)
         self.stackedWidget.setObjectName(u"stackedWidget")
         sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy2.setHorizontalStretch(2)
@@ -67,12 +67,12 @@ class Ui_Form(object):
         self.horizontalLayout.addWidget(self.stackedWidget)
 
 
-        self.retranslateUi(Form)
+        self.retranslateUi(Preferences)
 
-        QMetaObject.connectSlotsByName(Form)
+        QMetaObject.connectSlotsByName(Preferences)
     # setupUi
 
-    def retranslateUi(self, Form):
-        Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
+    def retranslateUi(self, Preferences):
+        Preferences.setWindowTitle(QCoreApplication.translate("Preferences", u"Form", None))
     # retranslateUi
 
