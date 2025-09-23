@@ -112,7 +112,7 @@
    <widget class="QWidget" name="dockWidgetContents_2">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="ListView" name="listView"/>
+      <widget class="ListView" name="historyListView"/>
      </item>
     </layout>
    </widget>

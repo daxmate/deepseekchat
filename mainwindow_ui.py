@@ -95,10 +95,10 @@ class Ui_MainWindow(object):
         self.dockWidgetContents_2.setObjectName(u"dockWidgetContents_2")
         self.verticalLayout_2 = QVBoxLayout(self.dockWidgetContents_2)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.listView = ListView(self.dockWidgetContents_2)
-        self.listView.setObjectName(u"listView")
+        self.historyListView = ListView(self.dockWidgetContents_2)
+        self.historyListView.setObjectName(u"historyListView")
 
-        self.verticalLayout_2.addWidget(self.listView)
+        self.verticalLayout_2.addWidget(self.historyListView)
 
         self.dockWidget_2.setWidget(self.dockWidgetContents_2)
         MainWindow.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.dockWidget_2)
