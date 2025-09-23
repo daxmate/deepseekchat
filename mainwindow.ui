@@ -36,7 +36,7 @@
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="InputEditor" name="input_edit">
@@ -112,18 +112,13 @@
    <widget class="QWidget" name="dockWidgetContents_2">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="HistoryListView" name="listView"/>
+      <widget class="ListView" name="listView"/>
      </item>
     </layout>
    </widget>
   </widget>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>HistoryListView</class>
-   <extends>QListView</extends>
-   <header>historylistview.h</header>
-  </customwidget>
   <customwidget>
    <class>InputEditor</class>
    <extends>QTextEdit</extends>
@@ -133,6 +128,11 @@
    <class>OutputTextEdit</class>
    <extends>QTextEdit</extends>
    <header>outputtextedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ListView</class>
+   <extends>QListView</extends>
+   <header>listview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

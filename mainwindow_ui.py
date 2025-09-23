@@ -19,8 +19,8 @@ from PySide6.QtWidgets import (QApplication, QDockWidget, QHBoxLayout, QMainWind
     QMenuBar, QPushButton, QSizePolicy, QSplitter,
     QStatusBar, QVBoxLayout, QWidget)
 
-from historylistview import HistoryListView
 from inputeditor import InputEditor
+from listview import ListView
 from outputtextedit import OutputTextEdit
 
 class Ui_MainWindow(object):
@@ -47,12 +47,12 @@ class Ui_MainWindow(object):
 "}")
         self.output_edit.setReadOnly(True)
         self.splitter.addWidget(self.output_edit)
-        self.widget = QWidget(self.splitter)
-        self.widget.setObjectName(u"widget")
-        self.horizontalLayout = QHBoxLayout(self.widget)
+        self.layoutWidget = QWidget(self.splitter)
+        self.layoutWidget.setObjectName(u"layoutWidget")
+        self.horizontalLayout = QHBoxLayout(self.layoutWidget)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
-        self.input_edit = InputEditor(self.widget)
+        self.input_edit = InputEditor(self.layoutWidget)
         self.input_edit.setObjectName(u"input_edit")
         sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
         sizePolicy1.setHorizontalStretch(0)
@@ -65,7 +65,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.input_edit)
 
-        self.send_button = QPushButton(self.widget)
+        self.send_button = QPushButton(self.layoutWidget)
         self.send_button.setObjectName(u"send_button")
         sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Maximum)
         sizePolicy2.setHorizontalStretch(0)
@@ -77,7 +77,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.send_button)
 
-        self.splitter.addWidget(self.widget)
+        self.splitter.addWidget(self.layoutWidget)
 
         self.horizontalLayout_2.addWidget(self.splitter)
 
@@ -95,7 +95,7 @@ class Ui_MainWindow(object):
         self.dockWidgetContents_2.setObjectName(u"dockWidgetContents_2")
         self.verticalLayout_2 = QVBoxLayout(self.dockWidgetContents_2)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.listView = HistoryListView(self.dockWidgetContents_2)
+        self.listView = ListView(self.dockWidgetContents_2)
         self.listView.setObjectName(u"listView")
 
         self.verticalLayout_2.addWidget(self.listView)
