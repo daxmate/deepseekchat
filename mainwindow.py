@@ -42,10 +42,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # 设置主题与系统主题一致
         self.setup_theme()
 
-        self.response = None
-        self.final_response = None
 
-        self.last_message = None
         self.statusBar().setMouseTracking(True)
         self.statusBar().installEventFilter(self)
 
