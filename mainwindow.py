@@ -13,6 +13,7 @@ from PySide6.QtCore import (
 )
 from PySide6.QtGui import QMouseEvent, QAction
 from mainwindow_ui import Ui_MainWindow
+from preferences import Preferences
 import copy
 import time
 from resources import dsc
@@ -174,4 +175,5 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         app_menu.addAction(pref_action)
 
     def preference(self):
-        print("preference")
+        self.preferences = Preferences()
+        self.preferences.show()
