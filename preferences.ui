@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Settings</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
@@ -28,7 +28,7 @@
      <property name="orientation">
       <enum>Qt::Orientation::Horizontal</enum>
      </property>
-     <widget class="QListView" name="listView">
+     <widget class="ListView" name="firstListView">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
         <horstretch>1</horstretch>
@@ -36,7 +36,7 @@
        </sizepolicy>
       </property>
      </widget>
-     <widget class="QListView" name="listView_2">
+     <widget class="ListView" name="secondListView">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
         <horstretch>1</horstretch>
@@ -60,6 +60,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ListView</class>
+   <extends>QListView</extends>
+   <header>listview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
