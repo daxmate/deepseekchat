@@ -13,7 +13,7 @@ from mainwindow import MainWindow
 import sys
 
 
-class DeepSeek(OpenAI, QObject):
+class ChatRobot(OpenAI, QObject):
     message_signal = Signal(str)
 
     def __init__(self, api_key: str, base_url="https://api.deepseek.com", parent: MainWindow = None):

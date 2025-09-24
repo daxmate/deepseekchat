@@ -31,8 +31,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.provider = "deepseek"
         self.client = None
         if self.provider == "deepseek":
-            from deepseek import DeepSeek
-            self.client = DeepSeek(api_key=self.platform.deepseek_api_key, parent=self)
+            from chatrobot import ChatRobot
+            self.client = ChatRobot(api_key=self.platform.deepseek_api_key, parent=self)
+
+        if not self.client: return
 
         if not self.client:
             return
