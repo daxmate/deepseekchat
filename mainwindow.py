@@ -25,7 +25,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.platform = Platform()
-        self.mail_content = sys.stdin.read()
         self.api_key = self.platform.deepseek_api_key
         self.setupUi(self)
 

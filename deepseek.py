@@ -9,13 +9,14 @@ from PySide6.QtWidgets import (
 
 from outputtextedit import OutputTextEdit
 from platform import Platform
+from mainwindow import MainWindow
+import sys
 
 
 class DeepSeek(OpenAI, QObject):
     message_signal = Signal(str)
 
-    def __init__(self, api_key: str, base_url="https://api.deepseek.com", mail_content: str = "",
-                 parent: QMainWindow = None):
+    def __init__(self, api_key: str, base_url="https://api.deepseek.com", parent: MainWindow = None):
         super().__init__(api_key=api_key, base_url=base_url)
         QObject.__init__(self)
         self.parent = parent
@@ -25,7 +26,7 @@ class DeepSeek(OpenAI, QObject):
         self.role = "email_assistant"
         self.model = "deepseek-chat"
         if self.role == "email_assistant":
-            self.mail_content = mail_content
+            self.mail_content = sys.stdin.read()
             self.init_config(self.mail_content)
 
     def init_config(self, mail_content: str):
