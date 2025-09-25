@@ -14,8 +14,8 @@ from src.forms.mainwindow_ui import Ui_MainWindow
 from preferences import Preferences
 import copy
 import time
-from platform import Platform
 from typing import cast
+from database import DatabaseManager
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -23,17 +23,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def __init__(self):
         super().__init__()
-        self.platform = Platform()
         self.mail_content = sys.stdin.read()
-        self.api_key = self.platform.deepseek_api_key
+        self.db_manager = DatabaseManager()
+        self.api_key = self.db_manager.get_setting('api_key', '')
         self.setupUi(self)
 
         self.provider = "deepseek"
         self.client = None
         if self.provider == "deepseek":
             from src.deepseek import DeepSeek
-            self.client = DeepSeek(api_key=self.platform.deepseek_api_key, parent=self)
-
+            self.client = DeepSeek(api_key=self.api_key, parent=self)
         if not self.client:
             return
         self.app_instance = self.get_app_instance()
@@ -56,7 +55,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.update_output_edit()
         self.app_instance.styleHints().colorSchemeChanged.connect(self.setup_theme)
         self.input_edit.send_requested.connect(self.on_send_button_clicked)
-        self.platform.error.connect(self.show_message_on_status_bar)
         self.message_signal.connect(self.show_message_on_status_bar)
         if self.client and hasattr(self.client, 'message_signal'):
             self.client.message_signal.connect(lambda msg: self.show_message_on_status_bar(msg),
@@ -115,6 +113,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         发送按钮点击时的槽函数
         """
         self.send_button.setEnabled(False)
+        self.client.messages.append({"role": "user", "content": ""})
         self.client.messages[1]["content"] += self.input_edit.toPlainText()
         self.update_output_edit()
         self.input_edit.clear()

@@ -8,18 +8,16 @@ from PySide6.QtWidgets import (
 )
 
 from outputtextedit import OutputTextEdit
-from platform import Platform
 
 
 class DeepSeek(OpenAI, QObject):
     message_signal = Signal(str)
 
     def __init__(self, api_key: str, base_url="https://api.deepseek.com", mail_content: str = "",
-                 parent: QMainWindow = None):
+                 parent: 'MainWindow' = None):
         super().__init__(api_key=api_key, base_url=base_url)
         QObject.__init__(self)
         self.parent = parent
-        self.platform = Platform()
         self.messages = []
         self.response = None
         self.role = "email_assistant"
@@ -29,26 +27,12 @@ class DeepSeek(OpenAI, QObject):
             self.init_config(self.mail_content)
 
     def init_config(self, mail_content: str):
-        if self.platform.config:
-            self.messages = [
-                {
-                    "role": "system",
-                    "content": self.platform.config['prompts']['email_assistant']['system'],
-                },
-                {
-                    "role": "user",
-                    "content": self.platform.config['prompts']['email_assistant']['user'].format(
-                        mail_content=mail_content,
-                    ),
-                },
-            ]
-        else:
-            self.messages = [
-                {
-                    "role": "system",
-                    "content": self.tr("You are a professional email reply assistant"),
-                }
-            ]
+        self.messages = [
+            {
+                "role": "system",
+                "content": self.parent.db_manager.get_setting("system_prompt"),
+            }
+        ]
 
     def list_deepseek_models(self):
         """
