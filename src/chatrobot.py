@@ -13,13 +13,13 @@ from outputtextedit import OutputTextEdit
 class ChatRobot(QObject):
     message_signal = Signal(str)
 
-    def __init__(self, mail_content: str, parent=None):
+    def __init__(self, mail_content: str, parent: 'MainWindow'=None):
         super().__init__(parent)
         self.parent = parent
         self.messages = []
         self.response = None
         self.role = "email_assistant"
-        self.model = "deepseek-chat"
+        self.model = self.parent.db_manager.get_setting('model', 'deepseek-chat')
         self.client = OpenAI(api_key=self.parent.db_manager.get_setting('api_key', ''),
                              base_url=self.parent.db_manager.get_setting('api_base_url', ''))
         if self.role == "email_assistant":
@@ -59,7 +59,7 @@ class ChatRobot(QObject):
                 msg = self.messages
 
             # 调用API获取流式响应
-            self.response = self.chat.completions.create(
+            self.response = self.client.chat.completions.create(
                 model=self.model,
                 messages=msg,
                 stream=True
