@@ -115,6 +115,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.update_output_edit()
         self.input_edit.clear()
         self.client.send_messages(self.output_edit)
+        self.send_button.setEnabled(True)
 
     def closeEvent(self, event):
         """
