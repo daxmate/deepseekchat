@@ -21,7 +21,7 @@ def main():
     if ok:
         app.installTranslator(qt_translator)
     app_translator = QTranslator()
-    ok = app_translator.load('app_zh_CN.qm')
+    ok = app_translator.load('resources/translations/app_zh_CN.qm')
     if ok:
         app.installTranslator(app_translator)
     win = MainWindow()
