@@ -26,11 +26,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.mail_content = sys.stdin.read()
         self.db_manager = DatabaseManager()
-        self.setupUi(self)
-
         self.client = ChatRobot(mail_content=self.mail_content, parent=self)
         if not self.client:
             return
+
+        self.setupUi(self)
+
         self.app_instance = self.get_app_instance()
 
         # 设置主题与系统主题一致
