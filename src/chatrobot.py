@@ -10,23 +10,22 @@ from PySide6.QtWidgets import (
 from outputtextedit import OutputTextEdit
 
 
-class ChatRobot(OpenAI, QObject):
+class ChatRobot(QObject):
     message_signal = Signal(str)
 
-    def __init__(self, api_key: str, base_url="https://api.deepseek.com", mail_content: str = "",
-                 parent=None):
-        super().__init__(api_key=api_key, base_url=base_url)
-        QObject.__init__(self)
+    def __init__(self, mail_content: str, parent=None):
+        super().__init__(parent)
         self.parent = parent
         self.messages = []
         self.response = None
         self.role = "email_assistant"
         self.model = "deepseek-chat"
+        self.client = OpenAI(api_key=self.parent.db_manager.get_setting('api_key', ''), base_url=self.parent.db_manager.get_setting('api_base_url', ''))
         if self.role == "email_assistant":
             self.mail_content = mail_content
-            self.init_config(self.mail_content)
+            self.init_config()
 
-    def init_config(self, mail_content: str):
+    def init_config(self):
         self.messages = [
             {
                 "role": "system",

@@ -26,10 +26,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.mail_content = sys.stdin.read()
         self.db_manager = DatabaseManager()
-        self.api_key = self.db_manager.get_setting('api_key', '')
         self.setupUi(self)
 
-        self.client = ChatRobot(api_key=self.api_key, mail_content=self.mail_content, parent=self)
+        self.client = ChatRobot(mail_content=self.mail_content, parent=self)
         if not self.client:
             return
         self.app_instance = self.get_app_instance()
