@@ -16,6 +16,7 @@ import copy
 import time
 from typing import cast
 from database import DatabaseManager
+from chatrobot import ChatRobot
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -28,11 +29,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.api_key = self.db_manager.get_setting('api_key', '')
         self.setupUi(self)
 
-        self.provider = "deepseek"
-        self.client = None
-        if self.provider == "deepseek":
-            from src.deepseek import DeepSeek
-            self.client = DeepSeek(api_key=self.api_key, parent=self)
+        self.client = ChatRobot(api_key=self.api_key, mail_content=self.mail_content, parent=self)
         if not self.client:
             return
         self.app_instance = self.get_app_instance()
