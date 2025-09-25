@@ -38,7 +38,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setup_theme()
         self.setup_menu()
 
-        self.statusBar().setMouseTracking(True)
+        self.last_message = ""
         self.statusBar().installEventFilter(self)
 
         self.connect_slots()

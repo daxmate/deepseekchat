@@ -88,6 +88,7 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
+        self.statusbar.setMouseTracking(True)
         MainWindow.setStatusBar(self.statusbar)
         self.dockWidget_2 = QDockWidget(MainWindow)
         self.dockWidget_2.setObjectName(u"dockWidget_2")
