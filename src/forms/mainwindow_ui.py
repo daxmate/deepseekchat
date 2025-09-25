@@ -110,6 +110,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"DeepSeek\u90ae\u4ef6\u52a9\u624b", None))
+        self.input_edit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\"\u2191\u2193\" to navigate input history \"\u21e7\u21a9\" to insert newline \"\u21a9\" to send", None))
         self.send_button.setText(QCoreApplication.translate("MainWindow", u"\u53d1\u9001", None))
     # retranslateUi
 
