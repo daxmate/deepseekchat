@@ -1,10 +1,8 @@
 import sys
 
-from PySide6 import QtCore
 from PySide6.QtWidgets import (
     QMainWindow,
     QApplication,
-    QMenu,
 )
 from PySide6.QtCore import (
     Qt,
@@ -12,11 +10,10 @@ from PySide6.QtCore import (
     QEvent,
 )
 from PySide6.QtGui import QMouseEvent, QAction
-from mainwindow_ui import Ui_MainWindow
+from src.forms.mainwindow_ui import Ui_MainWindow
 from preferences import Preferences
 import copy
 import time
-from resources import dsc
 from platform import Platform
 from typing import cast
 
@@ -34,7 +31,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.provider = "deepseek"
         self.client = None
         if self.provider == "deepseek":
-            from deepseek import DeepSeek
+            from src.deepseek import DeepSeek
             self.client = DeepSeek(api_key=self.platform.deepseek_api_key, parent=self)
 
         if not self.client:
