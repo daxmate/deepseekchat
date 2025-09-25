@@ -24,7 +24,7 @@ class ChatRobot(QObject):
                              base_url=self.parent.db_manager.get_setting('api_base_url', ''))
         if self.role == "email_assistant":
             self.mail_content = mail_content
-            self.init_config()
+        self.init_config()
 
     def init_config(self):
         self.messages = [
