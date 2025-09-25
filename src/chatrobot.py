@@ -20,7 +20,8 @@ class ChatRobot(QObject):
         self.response = None
         self.role = "email_assistant"
         self.model = "deepseek-chat"
-        self.client = OpenAI(api_key=self.parent.db_manager.get_setting('api_key', ''), base_url=self.parent.db_manager.get_setting('api_base_url', ''))
+        self.client = OpenAI(api_key=self.parent.db_manager.get_setting('api_key', ''),
+                             base_url=self.parent.db_manager.get_setting('api_base_url', ''))
         if self.role == "email_assistant":
             self.mail_content = mail_content
             self.init_config()
@@ -32,12 +33,6 @@ class ChatRobot(QObject):
                 "content": self.parent.db_manager.get_setting("system_prompt"),
             }
         ]
-
-    def list_deepseek_models(self):
-        """
-        获取Deepseek模型列表
-        """
-        return self.models.list()
 
     def trim_messages(self):
         """
