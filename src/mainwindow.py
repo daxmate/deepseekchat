@@ -89,13 +89,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         输入编辑框文本改变时的槽函数
         """
-        msg = copy.deepcopy(self.client.messages)
+        msg = self.client.messages
         if self.config["role"] == "mail_assistant" and len(msg) == 1:
             user_command = self.config["mail_prefix"] + self.input_edit.toPlainText()
         else:
             user_command = self.input_edit.toPlainText()
         if msg[-1]["role"] == "user":
-            msg[-1]["content"] = self.client.messages[-1]["content"] + user_command
+            msg[-1]["content"] = user_command
         else:
             msg.append({"role": "user", "content": user_command})
 
