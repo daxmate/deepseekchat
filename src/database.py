@@ -231,6 +231,8 @@ class DatabaseManager(QObject):
                 "api_base_url": "https://api.deepseek.com",
                 # default system prompt
                 "system_prompt": self.tr("You are a helpful assistant that provides accurate and concise answers."),
+                # role
+                "role": "assistant",
                 # 界面相关设置
                 "theme": "system",  # system, light, dark
                 "font_size": "12",
@@ -248,9 +250,8 @@ class DatabaseManager(QObject):
             }
 
             # 将默认设置写入数据库
-            for key, values in default_settings.items():
-                for value in values:
-                    self.save_setting(key, value)
+            for key, value in default_settings.items():
+                self.save_setting(key, value)
 
             print(self.tr("Default settings have been initialized"))
 
