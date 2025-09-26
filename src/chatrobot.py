@@ -71,7 +71,10 @@ class ChatRobot(QObject):
     def read_stream(self, output_edit: OutputTextEdit):
         """读取流式响应"""
         try:
-            final_response = self.tr("Reply email as follows:\n")
+            if self.parent.config["role"] == "email_assistant":
+                final_response = self.parent.config["mail_content_prompt"]
+            else:
+                final_response = ""
 
             # 根据模型类型决定处理方式
             if self.model == "deepseek-reasoner":
