@@ -26,6 +26,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.mail_content = sys.stdin.read()
         self.db_manager = DatabaseManager()
+        self.config = self.db_manager.get_settings()
         self.client = ChatRobot(mail_content=self.mail_content, parent=self)
         if not self.client:
             return
@@ -89,8 +90,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         输入编辑框文本改变时的槽函数
         """
         msg = copy.deepcopy(self.client.messages)
-        user_command = self.tr(
-            "Please reply according to the original email and include the following information: \n") + self.input_edit.toPlainText()
+        user_command = self.config["mail_prefix"] + self.input_edit.toPlainText()
         if msg[-1]["role"] == "user":
             msg[-1]["content"] = self.client.messages[-1]["content"] + user_command
         else:
