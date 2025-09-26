@@ -246,7 +246,8 @@ class DatabaseManager(QObject):
             1.	Reply in the same language as the original email.
             2.	Use a tone similar to that of the original email (principle of equivalence)."""),
                 "mail_prefix": self.tr(
-                    """ Please reply according to the original email and include the following information: \n """)
+                    """ Please reply according to the original email and include the following information: \n """),
+                "mail_content_prompt": self.tr("Reply email as follows:\n")
             }
 
             # 将默认设置写入数据库
