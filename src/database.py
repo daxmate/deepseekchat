@@ -166,17 +166,17 @@ class DatabaseManager(QObject):
         conn.commit()
         conn.close()
 
-    def get_settings(self, key):
+    def get_settings(self):
         """获取指定键的所有值"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("SELECT value FROM settings WHERE key = ?", (key,))
+        cursor.execute("SELECT key, value FROM settings")
         rows = cursor.fetchall()
 
         conn.close()
 
-        return [row[0] for row in rows]  # 返回值列表
+        return {row[0]: row[1] for row in rows}  # 返回键值对字典
 
     def delete_setting(self, key, value=None):
         """删除设置，可以删除指定键的所有值或特定值"""
@@ -239,7 +239,12 @@ class DatabaseManager(QObject):
                 "max_tokens": "1000",
                 # 历史记录相关设置
                 "save_history": "true",
-                "max_history_count": "50"
+                "max_history_count": "50",
+                "mail_prompt": self.tr("""Please reply to the sender of the received email in a professional tone. Rules:
+            1.	Reply in the same language as the original email.
+            2.	Use a tone similar to that of the original email (principle of equivalence)."""),
+                "mail_prefix": self.tr(
+                    """ Please reply according to the original email and include the following information: \n """)
             }
 
             # 将默认设置写入数据库
@@ -253,3 +258,4 @@ class DatabaseManager(QObject):
 if __name__ == '__main__':
     db = DatabaseManager()
     db.init_default_settings()
+    print(db.get_settings())
