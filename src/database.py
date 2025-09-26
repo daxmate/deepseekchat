@@ -226,7 +226,7 @@ class DatabaseManager(QObject):
                 # 模型相关设置
                 "model": "deepseek-chat",
                 # api_key
-                "api_key": "sk-da8b130747a84b05b8227373b53699af",
+                "api_key": "",
                 # api_base_url
                 "api_base_url": "https://api.deepseek.com",
                 # default system prompt
