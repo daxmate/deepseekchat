@@ -90,7 +90,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         输入编辑框文本改变时的槽函数
         """
         msg = copy.deepcopy(self.client.messages)
-        user_command = self.config["mail_prefix"] + self.input_edit.toPlainText()
+        if self.config["role"] == "mail_assistant" and len(msg) == 1:
+            user_command = self.config["mail_prefix"] + self.input_edit.toPlainText()
+        else:
+            user_command = self.input_edit.toPlainText()
         if msg[-1]["role"] == "user":
             msg[-1]["content"] = self.client.messages[-1]["content"] + user_command
         else:
@@ -111,7 +114,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         self.send_button.setEnabled(False)
         self.client.messages.append({"role": "user", "content": ""})
-        self.client.messages[1]["content"] += self.input_edit.toPlainText()
+        self.client.messages[-1]["content"] += self.input_edit.toPlainText() + "\n"
         self.update_output_edit()
         self.input_edit.clear()
         self.client.send_messages(self.output_edit)
