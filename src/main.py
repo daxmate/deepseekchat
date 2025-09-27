@@ -24,6 +24,10 @@ def main():
     ok = app_translator.load('resources/translations/app_zh_CN.qm')
     if ok:
         app.installTranslator(app_translator)
+    webengine_translator = QTranslator()
+    ok = webengine_translator.load('qtwebengine_zh_CN', translation_path)
+    if ok:
+        app.installTranslator(webengine_translator)
     win = MainWindow()
     win.show()
     sys.exit(app.exec())
