@@ -3,7 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code Highlighting</title>
+    <title>DeepSeekChat</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e5e5e5; /* 微信聊天背景色 */
+            color: #333;
+            /*line-height: 1.6;*/
+            margin: 0;
+            padding: 0;
+        }
+
+        .user {
+            background-color: #95ec69; /* 微信用户消息气泡绿色 */
+            color: #000;
+            border-radius: 15px;
+            padding: 5px 10px;
+            text-align: right;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1); /* 更轻微的阴影 */
+            max-width: 80%;
+            width: fit-content; /* 根据内容调整宽度 */
+            margin: 10px 0 10px auto;
+            position: relative;
+        }
+
+        .assistant {
+            background-color: #ffffff; /* 微信助手消息气泡白色 */
+            color: #000;
+            border-radius: 15px;
+            padding: 5px 10px;
+            margin: 10px 0;
+            text-align: left;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1); /* 更轻微的阴影 */
+            max-width: 80%;
+            width: fit-content; /* 根据内容调整宽度 */
+            position: relative;
+        }
+
+        .system {
+            background-color: #f0f0f0; /* 系统消息使用浅灰色 */
+            color: #666;
+            border-radius: 15px;
+            padding: 5px 10px;
+            margin: 10px auto;
+            text-align: center;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+            max-width: 80%;
+            width: fit-content; /* 根据内容调整宽度 */
+        }
+
+        pre {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 2px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            border: 1px solid #4a5568; /* 添加一个细边框 */
+        }
+
+        code {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        }
+    </style>
     <!-- Highlight.js CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
@@ -28,5 +90,6 @@
 </head>
 <body>
 {content}
+<script src="./deepseek.js"></script>
 </body>
 </html>

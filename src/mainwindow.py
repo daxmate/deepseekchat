@@ -75,11 +75,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def init_webengine(self):
         with open('src/template.html', 'r') as f:
             html_template = f.read()
-            html_template = html_template.replace("{content}", self.config['system_prompt'])
+            html_template = html_template.replace("{content}", self.convert_markdown_to_html(self.client.messages[0]))
             self.webEngineView.setHtml(html_template)
 
         with open('src/deepseek.js', 'r') as f:
             self.js_code = f.read()
+
+    def convert_markdown_to_html(self, message: dict) -> str:
+        """
+        将Markdown内容转换为HTML格式
+        """
+        return f"""
+        <div class={message["role"]}>
+        {self.md.render(message["content"])}
+        </div>
+"""
 
     def update_webengine_view(self):
         """
@@ -89,7 +99,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # 将所有消息转为HTML内容
         html_content = ""
         for msg in self.client.messages:
-            content = self.md.render(msg["content"])
+            content = self.convert_markdown_to_html(msg)
             html_content += content + "\n\n"
 
         # 对HTML内容进行转义处理，确保特殊字符能正确显示
