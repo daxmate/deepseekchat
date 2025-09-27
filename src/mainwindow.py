@@ -12,13 +12,18 @@ from PySide6.QtCore import (
 from PySide6.QtGui import QMouseEvent, QAction
 from src.forms.mainwindow_ui import Ui_MainWindow
 from preferences import Preferences
-import copy
 import time
 from typing import cast
 from database import DatabaseManager
 from chatrobot import ChatRobot
 from markdown_it import MarkdownIt
 from markdown_it.presets import gfm_like
+
+
+def setup_markdown():
+    config = gfm_like.make()
+    md = MarkdownIt(config=config)
+    return md
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -30,7 +35,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.db_manager = DatabaseManager()
         self.config = self.db_manager.get_settings()
         # markdown 渲染器
-        self.md = self.setup_markdown()
+        self.md = setup_markdown()
 
         self.setupUi(self)
 
@@ -48,12 +53,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return
 
         self.connect_slots()
-        self.init_webengine()
 
-    def setup_markdown(self):
-        config = gfm_like.make()
-        md = MarkdownIt(config=config)
-        return md
+        self.js_code = None
+        self.init_webengine()
 
     def connect_slots(self):
         """
@@ -73,8 +75,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def init_webengine(self):
         with open('src/template.html', 'r') as f:
             html_template = f.read()
-            html_template = html_template.format(content=self.config['system_prompt'])
+            html_template = html_template.replace("{content}", self.config['system_prompt'])
             self.webEngineView.setHtml(html_template)
+
+        with open('src/deepseek.js', 'r') as f:
+            self.js_code = f.read()
 
     def update_webengine_view(self):
         """
@@ -85,14 +90,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         html_content = ""
         for msg in self.client.messages:
             content = self.md.render(msg["content"])
-            html_content += content
+            html_content += content + "\n\n"
+
+        # 对HTML内容进行转义处理，确保特殊字符能正确显示
+        escaped_html_content = (html_content
+                                .replace('\\', '\\\\')
+                                .replace('`', '\\`')
+                                .replace('"', '\\"')
+                                )
 
         # 更新HTML内容的部分
-
-        # 使用 JavaScript 动态更新页面内容
-        js_code = f'''
-            document.body.innerHTML = `{html_content}`;
-        '''
+        js_code = fr"""
+        document.body.innerHTML = `{escaped_html_content}`;
+        
+        {self.js_code}
+        """
 
         # 执行 JavaScript 代码来更新指定部分
         self.webEngineView.page().runJavaScript(js_code)
@@ -120,12 +132,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return self.app_instance.styleHints().colorScheme() == Qt.ColorScheme.Dark
         else:
             return False
-
-    # def update_output_edit(self):
-    #     """
-    #     更新输出编辑框的内容
-    #     """
-    #     self.update_webengine_view()
 
     def on_input_edit_text_changed(self):
         """
