@@ -15,13 +15,13 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
+from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import (QApplication, QDockWidget, QHBoxLayout, QMainWindow,
     QMenuBar, QPushButton, QSizePolicy, QSplitter,
     QStatusBar, QVBoxLayout, QWidget)
 
 from inputeditor import InputEditor
 from listview import ListView
-from outputtextedit import OutputTextEdit
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -30,29 +30,26 @@ class Ui_MainWindow(object):
         MainWindow.resize(1000, 800)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.horizontalLayout_2 = QHBoxLayout(self.centralwidget)
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.verticalLayout = QVBoxLayout(self.centralwidget)
+        self.verticalLayout.setObjectName(u"verticalLayout")
         self.splitter = QSplitter(self.centralwidget)
         self.splitter.setObjectName(u"splitter")
         self.splitter.setOrientation(Qt.Orientation.Vertical)
-        self.output_edit = OutputTextEdit(self.splitter)
-        self.output_edit.setObjectName(u"output_edit")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.webEngineView = QWebEngineView(self.splitter)
+        self.webEngineView.setObjectName(u"webEngineView")
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(30)
-        sizePolicy.setHeightForWidth(self.output_edit.sizePolicy().hasHeightForWidth())
-        self.output_edit.setSizePolicy(sizePolicy)
-        self.output_edit.setStyleSheet(u"#output_edit{\n"
-" background: #eeeeee;\n"
-"}")
-        self.output_edit.setReadOnly(True)
-        self.splitter.addWidget(self.output_edit)
-        self.layoutWidget = QWidget(self.splitter)
-        self.layoutWidget.setObjectName(u"layoutWidget")
-        self.horizontalLayout = QHBoxLayout(self.layoutWidget)
+        sizePolicy.setVerticalStretch(9)
+        sizePolicy.setHeightForWidth(self.webEngineView.sizePolicy().hasHeightForWidth())
+        self.webEngineView.setSizePolicy(sizePolicy)
+        self.webEngineView.setUrl(QUrl(u"about:blank"))
+        self.splitter.addWidget(self.webEngineView)
+        self.widget = QWidget(self.splitter)
+        self.widget.setObjectName(u"widget")
+        self.horizontalLayout = QHBoxLayout(self.widget)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
-        self.input_edit = InputEditor(self.layoutWidget)
+        self.input_edit = InputEditor(self.widget)
         self.input_edit.setObjectName(u"input_edit")
         sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
         sizePolicy1.setHorizontalStretch(0)
@@ -65,7 +62,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.input_edit)
 
-        self.send_button = QPushButton(self.layoutWidget)
+        self.send_button = QPushButton(self.widget)
         self.send_button.setObjectName(u"send_button")
         sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Maximum)
         sizePolicy2.setHorizontalStretch(0)
@@ -77,9 +74,9 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.send_button)
 
-        self.splitter.addWidget(self.layoutWidget)
+        self.splitter.addWidget(self.widget)
 
-        self.horizontalLayout_2.addWidget(self.splitter)
+        self.verticalLayout.addWidget(self.splitter)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
