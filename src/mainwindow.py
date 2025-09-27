@@ -48,7 +48,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return
 
         self.connect_slots()
-        self.update_webengine_view()
+        self.init_webengine()
 
     def setup_markdown(self):
         config = gfm_like.make()
@@ -59,7 +59,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         连接信号槽
         """
-        self.input_edit.textChanged.connect(self.on_input_edit_text_changed)
+        # self.input_edit.textChanged.connect(self.on_input_edit_text_changed)
         # self.send_button.clicked.connect(self.on_send_button_clicked)
         # self.update_output_edit()
         # self.app_instance.styleHints().colorSchemeChanged.connect(self.setup_theme)
@@ -70,21 +70,35 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #                                        Qt.ConnectionType.QueuedConnection)
         self.client.message_updated_signal.connect(self.update_webengine_view)
 
+    def init_webengine(self):
+        with open('src/template.html', 'r') as f:
+            html_template = f.read()
+            html_template = html_template.format(content=self.config['system_prompt'])
+            self.webEngineView.setHtml(html_template)
+
     def update_webengine_view(self):
         """
-        更新输出编辑框的内容
+        更新WebEngineView的内容
         """
 
-        html_template = open('src/template.html', 'r').read()
-        text = ""
+        # 将所有消息转为HTML内容
+        html_content = ""
         for msg in self.client.messages:
             content = self.md.render(msg["content"])
-            text += content
+            html_content += content
 
-        html = html_template.format(content=text)
-        self.webEngineView.setHtml(html)
-        self.webEngineView.repaint()
-        QApplication.processEvents()
+        # 更新HTML内容的部分
+
+        # 使用 JavaScript 动态更新页面内容
+        js_code = f'''
+            document.body.innerHTML = `{html_content}`;
+        '''
+
+        # 执行 JavaScript 代码来更新指定部分
+        self.webEngineView.page().runJavaScript(js_code)
+        self.webEngineView.page().runJavaScript("""
+        window.scrollTo(0, document.body.scrollHeight);
+        """)
 
     @staticmethod
     def get_app_instance() -> QApplication:
