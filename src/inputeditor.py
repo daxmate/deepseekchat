@@ -3,6 +3,8 @@ from PySide6.QtCore import QEvent, Qt, Signal
 from PySide6.QtGui import QKeyEvent
 from typing import cast
 
+from urllib3 import Retry
+
 
 class InputEditor(QTextEdit):
     send_requested = Signal()
@@ -29,9 +31,11 @@ class InputEditor(QTextEdit):
                     # Shift+Enter：插入换行符
                     cursor = self.textCursor()
                     cursor.insertText("\n")
+                    return True
                 else:
                     self.histories.append(self.toPlainText())
                     self.send_requested.emit()
+                    return True
         if obj is self and event.type() == QEvent.Type.KeyRelease:
             key_event = cast(QKeyEvent, event)
             key = key_event.key()
