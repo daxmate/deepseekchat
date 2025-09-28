@@ -45,6 +45,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.last_message = ""
         self.statusBar().installEventFilter(self)
+        self.chat_history = []
+        self.init_history()
 
         self.client = ChatRobot(mail_content=self.mail_content, parent=self)
         if not self.client:
@@ -173,6 +175,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         pref_action.triggered.connect(self.preference)
         pref_action.setMenuRole(QAction.MenuRole.PreferencesRole)
         app_menu.addAction(pref_action)
+
+    def init_history(self):
+        """
+        初始化聊天记录
+        """
+        self.chat_history = self.db_manager.get_all_chats()
+        self.historyListView.add_items([record['title'] for record in self.chat_history])
 
     def preference(self):
         """
