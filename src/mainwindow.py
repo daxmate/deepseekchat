@@ -61,10 +61,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         连接信号槽
         """
-        # self.input_edit.textChanged.connect(self.on_input_edit_text_changed)
-        # self.send_button.clicked.connect(self.on_send_button_clicked)
-        # self.update_output_edit()
-        # self.app_instance.styleHints().colorSchemeChanged.connect(self.setup_theme)
+        self.send_button.clicked.connect(self.on_send_button_clicked)
+        self.app_instance.styleHints().colorSchemeChanged.connect(self.setup_theme)
         self.input_edit.send_requested.connect(self.on_send_button_clicked)
         # self.message_signal.connect(self.show_message_on_status_bar)
         # if self.client and hasattr(self.client, 'message_signal'):
