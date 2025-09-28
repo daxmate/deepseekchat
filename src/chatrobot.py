@@ -5,7 +5,7 @@ from PySide6.QtCore import (
     QThread,
 )
 from PySide6.QtWidgets import (
-    QApplication, QWidget, QMainWindow,
+    QApplication
 )
 
 
