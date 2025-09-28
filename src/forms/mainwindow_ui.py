@@ -44,12 +44,12 @@ class Ui_MainWindow(object):
         self.webEngineView.setSizePolicy(sizePolicy)
         self.webEngineView.setUrl(QUrl(u"about:blank"))
         self.splitter.addWidget(self.webEngineView)
-        self.widget = QWidget(self.splitter)
-        self.widget.setObjectName(u"widget")
-        self.horizontalLayout = QHBoxLayout(self.widget)
+        self.layoutWidget = QWidget(self.splitter)
+        self.layoutWidget.setObjectName(u"layoutWidget")
+        self.horizontalLayout = QHBoxLayout(self.layoutWidget)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
-        self.input_edit = InputEditor(self.widget)
+        self.input_edit = InputEditor(self.layoutWidget)
         self.input_edit.setObjectName(u"input_edit")
         sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
         sizePolicy1.setHorizontalStretch(0)
@@ -62,7 +62,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.input_edit)
 
-        self.send_button = QPushButton(self.widget)
+        self.send_button = QPushButton(self.layoutWidget)
         self.send_button.setObjectName(u"send_button")
         sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Maximum)
         sizePolicy2.setHorizontalStretch(0)
@@ -74,7 +74,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.send_button)
 
-        self.splitter.addWidget(self.widget)
+        self.splitter.addWidget(self.layoutWidget)
 
         self.verticalLayout.addWidget(self.splitter)
 
@@ -98,6 +98,11 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2.addWidget(self.historyListView)
 
+        self.newchat_btn = QPushButton(self.dockWidgetContents_2)
+        self.newchat_btn.setObjectName(u"newchat_btn")
+
+        self.verticalLayout_2.addWidget(self.newchat_btn)
+
         self.dockWidget_2.setWidget(self.dockWidgetContents_2)
         MainWindow.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.dockWidget_2)
 
@@ -110,5 +115,6 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"DeepSeek\u90ae\u4ef6\u52a9\u624b", None))
         self.input_edit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\"\u2191\u2193\" to navigate input history \"\u21e7\u21a9\" to insert newline \"\u21a9\" to send", None))
         self.send_button.setText(QCoreApplication.translate("MainWindow", u"\u53d1\u9001", None))
+        self.newchat_btn.setText(QCoreApplication.translate("MainWindow", u"New Chat", None))
     # retranslateUi
 

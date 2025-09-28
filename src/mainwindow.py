@@ -69,6 +69,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.client.title_ready_signal.connect(self.db_manager.update_title)
         self.historyListView.index_signal.connect(self.on_history_item_clicked)
         self.client.title_ready_signal.connect(self.update_history)
+        self.newchat_btn.clicked.connect(self.new_chat)
 
     def on_history_item_clicked(self, index: int):
         """处理历史记录项点击事件"""
@@ -205,3 +206,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         self.preferences = Preferences()
         self.preferences.show()
+
+    def new_chat(self):
+        """
+        新建聊天
+        """
+        self.chat_id = None
+        self.client.messages = self.client.messages[:1]
+        self.update_webengine_view()
