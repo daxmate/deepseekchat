@@ -165,6 +165,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.send_button.setEnabled(False)
         content = self.input_edit.toPlainText() + "\n"
         self.client.messages.append({"role": "user", "content": content})
+        self.update_webengine_view()
         self.input_edit.clear()
         self.client.send_messages()
         self.send_button.setEnabled(True)
