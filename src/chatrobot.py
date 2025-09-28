@@ -58,8 +58,11 @@ class ChatRobot(QObject):
         self.worker_thread = None
 
     def init_client(self):
-        self.client = OpenAI(api_key=self.parent.db_manager.get_setting('api_key', ''),
-                             base_url=self.parent.db_manager.get_setting('api_base_url', ''))
+        try:
+            self.client = OpenAI(api_key=self.parent.db_manager.get_setting('api_key', ''),
+                                 base_url=self.parent.db_manager.get_setting('api_base_url', ''))
+        except Exception as e:
+            self.error_signal.emit(str(e))
 
     def trim_messages(self):
         """
