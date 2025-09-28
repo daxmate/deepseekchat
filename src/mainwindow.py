@@ -85,11 +85,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         将Markdown内容转换为HTML格式
         """
-        return f"""
-        <div class={message["role"]}>
-        {self.md.render(message["content"])}
+        return f""" <div class={message["role"]}>
+        {self.md.render(message["content"].replace("\\", "\\\\"))}
         </div>
-"""
+""".replace("\\", "\\\\")
 
     def update_webengine_view(self):
         """
@@ -102,16 +101,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             content = self.convert_markdown_to_html(msg)
             html_content += content + "\n\n"
 
-        # 对HTML内容进行转义处理，确保特殊字符能正确显示
-        escaped_html_content = (html_content
-                                .replace('\\', '\\\\')
-                                .replace('`', '\\`')
-                                .replace('"', '\\"')
-                                )
-
         # 更新HTML内容的部分
         js_code = fr"""
-        document.body.innerHTML = `{escaped_html_content}`;
+        document.body.innerHTML = `{html_content}`;
         
         {self.js_code}
         """
