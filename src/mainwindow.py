@@ -32,7 +32,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.mail_content = sys.stdin.read()
-        self.db_manager = DatabaseManager()
+        self.db_manager = DatabaseManager(self)
         self.config = self.db_manager.get_settings()
         # markdown 渲染器
         self.md = setup_markdown()
@@ -49,6 +49,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.client = ChatRobot(mail_content=self.mail_content, parent=self)
         if not self.client:
             return
+        self.chat_id = None
         self.init_webengine()
         self.client.init_client()
 
@@ -105,6 +106,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.webEngineView.page().runJavaScript("""
         window.scrollTo(0, document.body.scrollHeight);
         """)
+
+        if self.chat_id is None:
+            self.chat_id = self.db_manager.add_chat(self.client.messages)
+        else:
+            self.db_manager.update_chat(self.chat_id, self.client.messages)
 
     @staticmethod
     def get_app_instance() -> QApplication:

@@ -1,13 +1,16 @@
 import sqlite3
 import json
 from datetime import datetime
-from PySide6.QtCore import QObject
+from PySide6.QtCore import QObject, Signal
 from platform import *
 
 
 class DatabaseManager(QObject):
-    def __init__(self):
+    gen_title_request = Signal()
+
+    def __init__(self, parent: 'MainWindow' = None):
         super().__init__()
+        self.parent = parent
         self.db_path = os.path.join(get_config_dir(), 'deepseekchat.db')
 
         # 初始化数据库
@@ -67,7 +70,7 @@ class DatabaseManager(QObject):
         conn.commit()
         conn.close()
 
-    def add_chat(self, title, messages):
+    def add_chat(self, messages):
         """添加一条新的聊天记录"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
@@ -77,6 +80,8 @@ class DatabaseManager(QObject):
 
         # 获取当前时间
         date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        title = self.tr("New Chat")
 
         # 插入记录
         cursor.execute(
@@ -121,13 +126,16 @@ class DatabaseManager(QObject):
 
         return [{'id': row[0], 'date': row[1], 'title': row[2]} for row in rows]
 
-    def update_chat(self, chat_id, title=None, messages=None):
+    def update_chat(self, chat_id, messages=None):
         """更新聊天记录"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        if title:
-            cursor.execute("UPDATE chat_history SET title = ? WHERE id = ?", (title, chat_id))
+        title = cursor.execute("SELECT title FROM chat_history WHERE id = ?", (chat_id,)).fetchone()[0]
+        if title == self.tr("New Chat"):
+            print(f'{title = }')
+            # self.gen_title_request.emit()
+            pass
 
         if messages:
             content = json.dumps(messages)
@@ -255,6 +263,16 @@ class DatabaseManager(QObject):
                 self.save_setting(key, value)
 
             print(self.tr("Default settings have been initialized"))
+
+    def update_title(self, title):
+        """更新聊天记录的设置"""
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        cursor.execute("UPDATE chat_history SET title = ? WHERE id = ?", (title, self.parent.chat_id))
+
+        conn.commit()
+        conn.close()
 
 
 if __name__ == '__main__':
