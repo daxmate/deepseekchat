@@ -44,14 +44,8 @@ class ChatRobot(QObject):
         self.response = None
         self.role = "email_assistant"
         self.model = self.parent.db_manager.get_setting('model', 'deepseek-chat')
-        self.client = OpenAI(api_key=self.parent.db_manager.get_setting('api_key', ''),
-                             base_url=self.parent.db_manager.get_setting('api_base_url', ''))
         if self.role == "email_assistant":
             self.mail_content = mail_content
-        self.init_config()
-        self.worker_thread = None
-
-    def init_config(self):
         self.messages = [
             {
                 "role": "system",
@@ -59,6 +53,11 @@ class ChatRobot(QObject):
             }
         ]
         self.message_updated_signal.emit()
+        self.worker_thread = None
+
+    def init_client(self):
+        self.client = OpenAI(api_key=self.parent.db_manager.get_setting('api_key', ''),
+                             base_url=self.parent.db_manager.get_setting('api_base_url', ''))
 
     def trim_messages(self):
         """

@@ -41,7 +41,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.app_instance = self.get_app_instance()
 
-        # 设置主题与系统主题一致
         self.setup_menu()
 
         self.last_message = ""
@@ -50,11 +49,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.client = ChatRobot(mail_content=self.mail_content, parent=self)
         if not self.client:
             return
+        self.init_webengine()
+        self.client.init_client()
 
         self.connect_slots()
 
         self.js_code = None
-        self.init_webengine()
 
     def connect_slots(self):
         """
