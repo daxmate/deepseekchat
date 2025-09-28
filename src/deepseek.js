@@ -10,9 +10,9 @@ if (typeof MathJax !== 'undefined') {
     // 检查MathJax版本并使用相应的API
     if (MathJax.version && MathJax.version.startsWith('3')) {
         // MathJax v3
-        MathJax.typesetPromise().then(function() {
+        MathJax.typesetPromise().then(function () {
             console.log("MathJax rendering complete.");
-        }).catch(function(error) {
+        }).catch(function (error) {
             console.error("MathJax rendering failed:", error);
         });
     } else if (MathJax.typeset) {
