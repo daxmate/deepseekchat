@@ -14,19 +14,20 @@ class WorkerThread(QThread):
     result_ready = Signal()
     error_occurred = Signal(str)
 
-    def __init__(self, client, model, messages):
+    def __init__(self, client, model, messages, stream=True):
         super().__init__()
         self.client = client
         self.model = model
         self.messages = messages
         self.response = None
+        self.stream = stream
 
     def run(self):
         try:
             self.response = self.client.chat.completions.create(
                 model=self.model,
                 messages=self.messages,
-                stream=True
+                stream=self.stream,
             )
             self.result_ready.emit()
         except Exception as e:
@@ -42,6 +43,7 @@ class ChatRobot(QObject):
         self.parent = parent
         self.messages = []
         self.response = None
+        self.stream = True
         self.role = "email_assistant"
         self.model = self.parent.db_manager.get_setting('model', 'deepseek-chat')
         if self.role == "email_assistant":
@@ -72,7 +74,7 @@ class ChatRobot(QObject):
     def send_messages(self):
         """发送消息"""
         # 创建并启动工作线程
-        self.worker_thread = WorkerThread(self.client, self.model, self.messages)
+        self.worker_thread = WorkerThread(self.client, self.model, self.messages, stream=self.stream)
         self.worker_thread.result_ready.connect(self.on_worker_result_ready)
         self.worker_thread.error_occurred.connect(self.on_worker_error)
         self.worker_thread.start()
