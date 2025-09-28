@@ -86,7 +86,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         将Markdown内容转换为HTML格式
         """
         return f""" <div class={message["role"]}>
-        {self.md.render(message["content"].replace("\\", "\\\\"))}
+        {self.md.render(message["content"].replace("\\[", "\\\\[").replace("\\]", "\\\\]").replace("\\(", "\\\\(").replace("\\)", "\\\\)"))}
         </div>
 """.replace("\\", "\\\\")
 
