@@ -12,6 +12,7 @@ class DatabaseManager(QObject):
         super().__init__()
         self.parent = parent
         self.db_path = os.path.join(get_config_dir(), 'deepseekchat.db')
+        self.gen_title_request_sent = False
 
         # 初始化数据库
         self.init_database()
@@ -132,10 +133,9 @@ class DatabaseManager(QObject):
         cursor = conn.cursor()
 
         title = cursor.execute("SELECT title FROM chat_history WHERE id = ?", (chat_id,)).fetchone()[0]
-        if title == self.tr("New Chat"):
-            print(f'{title = }')
-            # self.gen_title_request.emit()
-            pass
+        if title == self.tr("New Chat") and not self.gen_title_request_sent:
+            self.gen_title_request.emit()
+            self.gen_title_request_sent = True
 
         if messages:
             content = json.dumps(messages)

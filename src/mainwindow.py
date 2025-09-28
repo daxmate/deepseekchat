@@ -63,8 +63,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.send_button.clicked.connect(self.on_send_button_clicked)
         self.input_edit.send_requested.connect(self.on_send_button_clicked)
         self.client.message_updated_signal.connect(self.update_webengine_view)
-        # self.db_manager.gen_title_request.connect(self.client.gen_title)
-        # self.client.title_ready_signal.connect(self.db_manager.update_title)
+        self.db_manager.gen_title_request.connect(self.client.gen_title)
+        self.client.title_ready_signal.connect(self.db_manager.update_title)
 
     def init_webengine(self):
         with open('src/template.html', 'r') as f:

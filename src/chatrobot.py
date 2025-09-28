@@ -151,7 +151,7 @@ class ChatRobot(QObject):
             {
                 "role": "user",
                 "content": f"""
-                Please generate a title for the following content:
+                Please generate a title for the following content(only reply one title without any other words):
                 {self.messages[1]["content"]}
 """,
             }
