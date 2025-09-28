@@ -67,6 +67,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.client.message_updated_signal.connect(self.update_webengine_view)
         self.db_manager.gen_title_request.connect(self.client.gen_title)
         self.client.title_ready_signal.connect(self.db_manager.update_title)
+        self.historyListView.index_signal.connect(self.on_history_item_clicked)
+        self.client.title_ready_signal.connect(self.update_history)
+
+    def on_history_item_clicked(self, index: int):
+        """处理历史记录项点击事件"""
+        if index >= 0 and index < len(self.chat_history):
+            chat = self.chat_history[index]
+            self.chat_id = chat['id']
+            messages = self.db_manager.get_chat(self.chat_id)['content']
+            self.client.messages = messages
+            self.update_webengine_view()
+            QApplication.processEvents()
 
     def init_webengine(self):
         with open('src/template.html', 'r') as f:
@@ -182,6 +194,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         self.chat_history = self.db_manager.get_all_chats()
         self.historyListView.add_items([record['title'] for record in self.chat_history])
+
+    def update_history(self):
+        self.historyListView.clear()
+        self.init_history()
 
     def preference(self):
         """

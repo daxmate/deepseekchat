@@ -1,7 +1,7 @@
 from typing import Any
 
 from PySide6.QtWidgets import QListView, QMainWindow
-from PySide6.QtCore import Qt, QModelIndex, QAbstractListModel
+from PySide6.QtCore import Qt, QModelIndex, QAbstractListModel, Signal
 
 
 class ItemModel(QAbstractListModel):
@@ -11,7 +11,6 @@ class ItemModel(QAbstractListModel):
 
     def rowCount(self, parent: QModelIndex = ...) -> int:
         return len(self.items)
-
 
     def data(self, index: QModelIndex, role: int = ...) -> Any:
         if not index.isValid():
@@ -23,11 +22,23 @@ class ItemModel(QAbstractListModel):
 
 
 class ListView(QListView):
+    index_signal = Signal(int)
+
     def __init__(self, parent=None, model: ItemModel = None):
         super().__init__(parent)
         self.model = model or ItemModel()
         self.setModel(self.model)
+        # 连接clicked信号到处理函数
+        self.clicked.connect(self.on_item_clicked)
 
     def add_items(self, items):
         self.model.items.extend(items)
         self.model.layoutChanged.emit()
+
+    def on_item_clicked(self, index: QModelIndex):
+        """处理项目点击事件"""
+        if index.isValid():
+            self.index_signal.emit(index.row())
+
+    def clear(self):
+        self.model.items.clear()
