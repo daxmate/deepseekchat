@@ -5,65 +5,110 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DeepSeekChat</title>
     <style>
+        /* 定义浅色模式下的 CSS 变量 */
+        :root {
+            --bg-primary: #e5e5e5; /* 微信聊天背景色 */
+            --text-primary: #333;
+            --user-bg: #95ec69; /* 微信用户消息气泡绿色 */
+            --user-text: #000;
+            --assistant-bg: #ffffff; /* 微信助手消息气泡白色 */
+            --assistant-text: #000;
+            --system-bg: #f0f0f0; /* 系统消息使用浅灰色 */
+            --system-text: #666;
+            --code-bg: #2d3748;
+            --code-text: #e2e8f0;
+            --code-border: #4a5568;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* 定义深色模式下的 CSS 变量 */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: #1a1a1a; /* 深色背景 */
+                --text-primary: #e0e0e0;
+                --user-bg: #28a745; /* 深色模式下的用户气泡绿色 */
+                --user-text: #ffffff;
+                --assistant-bg: #2d3748; /* 深色模式下的助手气泡色 */
+                --assistant-text: #e0e0e0;
+                --system-bg: #374151; /* 深色模式下的系统消息色 */
+                --system-text: #a0aec0;
+                --code-bg: #1a202c;
+                --code-text: #e2e8f0;
+                --code-border: #2d3748;
+                --shadow-color: rgba(0, 0, 0, 0.3);
+            }
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #e5e5e5; /* 微信聊天背景色 */
-            color: #333;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             /*line-height: 1.6;*/
             margin: 0;
             padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .user {
-            background-color: #95ec69; /* 微信用户消息气泡绿色 */
-            color: #000;
+            background-color: var(--user-bg);
+            color: var(--user-text);
             border-radius: 15px;
             padding: 5px 10px;
             text-align: right;
-            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1); /* 更轻微的阴影 */
+            box-shadow: 0 1px 1px var(--shadow-color);
             max-width: 80%;
-            width: fit-content; /* 根据内容调整宽度 */
+            width: fit-content;
             margin: 10px 0 10px auto;
             position: relative;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .assistant {
-            background-color: #ffffff; /* 微信助手消息气泡白色 */
-            color: #000;
+            background-color: var(--assistant-bg);
+            color: var(--assistant-text);
             border-radius: 15px;
             padding: 5px 10px;
             margin: 10px 0;
             text-align: left;
-            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1); /* 更轻微的阴影 */
+            box-shadow: 0 1px 1px var(--shadow-color);
             max-width: 80%;
-            width: fit-content; /* 根据内容调整宽度 */
+            width: fit-content;
             position: relative;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .system {
-            background-color: #f0f0f0; /* 系统消息使用浅灰色 */
-            color: #666;
+            background-color: var(--system-bg);
+            color: var(--system-text);
             border-radius: 15px;
             padding: 5px 10px;
             margin: 10px auto;
             text-align: center;
-            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 1px var(--shadow-color);
             max-width: 80%;
-            width: fit-content; /* 根据内容调整宽度 */
+            width: fit-content;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         pre {
-            background-color: #2d3748;
-            color: #e2e8f0;
+            background-color: var(--code-bg);
+            color: var(--code-text);
             padding: 2px;
             border-radius: 4px;
             overflow-x: auto;
             font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-            border: 1px solid #4a5568; /* 添加一个细边框 */
+            border: 1px solid var(--code-border);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
         code {
             font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        }
+
+        /* 为 highlight.js 添加深色模式支持 */
+        @media (prefers-color-scheme: dark) {
+            /* 如果你使用的是 highlight.js 的默认主题，这里可以自定义深色模式下的代码高亮颜色 */
+            /* 也可以考虑使用 highlight.js 的深色主题替代 */
         }
     </style>
     <!-- Highlight.js CDN -->
