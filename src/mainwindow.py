@@ -42,7 +42,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.app_instance = self.get_app_instance()
 
         # 设置主题与系统主题一致
-        self.setup_theme()
         self.setup_menu()
 
         self.last_message = ""
@@ -62,12 +61,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         连接信号槽
         """
         self.send_button.clicked.connect(self.on_send_button_clicked)
-        self.app_instance.styleHints().colorSchemeChanged.connect(self.setup_theme)
         self.input_edit.send_requested.connect(self.on_send_button_clicked)
-        # self.message_signal.connect(self.show_message_on_status_bar)
-        # if self.client and hasattr(self.client, 'message_signal'):
-        #     self.client.message_signal.connect(lambda msg: self.show_message_on_status_bar(msg),
-        #                                        Qt.ConnectionType.QueuedConnection)
         self.client.message_updated_signal.connect(self.update_webengine_view)
 
     def init_webengine(self):
@@ -122,33 +116,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             app_instance = QApplication(sys.argv)
         return app_instance
 
-    # 添加用于检测系统主题的代码
-    def is_system_dark_mode(self):
-        """
-        检查系统是否为深色模式
-        """
-        # 对于Qt 6.5+版本，可以使用colorScheme()方法
-        if self.app_instance.styleHints() and hasattr(self.app_instance.styleHints(), 'colorScheme'):
-            return self.app_instance.styleHints().colorScheme() == Qt.ColorScheme.Dark
-        else:
-            return False
-
-    def on_input_edit_text_changed(self):
-        """
-        输入编辑框文本改变时的槽函数
-        """
-        msg = self.client.messages
-        if self.config["role"] == "mail_assistant" and len(msg) == 1:
-            user_command = self.config["mail_prefix"] + self.input_edit.toPlainText()
-        else:
-            user_command = self.input_edit.toPlainText()
-        if msg[-1]["role"] == "user":
-            msg[-1]["content"] = user_command
-        else:
-            msg.append({"role": "user", "content": user_command})
-
-        self.update_webengine_view()
-
     def show_message_on_status_bar(self, message):
         """
         在状态栏显示消息
@@ -191,27 +158,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.statusBar().showMessage(self.last_message, 5000)
                 return True
         return super().eventFilter(obj, event)
-
-    def setup_theme(self):
-        """
-        根据系统主题设置应用配色
-        """
-        is_dark = self.is_system_dark_mode()
-
-        # 获取当前应用的调色板
-        palette = self.app_instance.palette()
-
-        # 根据主题模式设置颜色
-        if is_dark:
-            # 暗色模式
-            self.webEngineView.setStyleSheet("*{ background: #2d2d2d; color: #ffffff; }")
-            # 可以根据需要设置更多控件的样式
-        else:
-            # 亮色模式
-            self.webEngineView.setStyleSheet("*{ background: #eeeeee; color: #000000; }")
-
-        # 设置全局调色板
-        self.app_instance.setPalette(palette)
 
     def setup_menu(self):
         menu_bar = self.menuBar()
