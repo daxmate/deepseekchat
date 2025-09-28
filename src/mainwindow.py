@@ -70,6 +70,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.historyListView.index_signal.connect(self.on_history_item_clicked)
         self.client.title_ready_signal.connect(self.update_history)
         self.newchat_btn.clicked.connect(self.new_chat)
+        self.historyListView.delete_index_signal.connect(self.remove_history_item)
+
+    def remove_history_item(self, index):
+        """删除历史记录项"""
+        if 0 <= index < len(self.chat_history):
+            chat_to_delete = self.chat_history.pop(index)
+            chat_id = chat_to_delete['id']
+            self.db_manager.delete_chat(chat_id)
 
     def on_history_item_clicked(self, index: int):
         """处理历史记录项点击事件"""
