@@ -8,8 +8,6 @@ from PySide6.QtWidgets import (
     QApplication, QWidget, QMainWindow,
 )
 
-from outputtextedit import OutputTextEdit
-
 
 class WorkerThread(QThread):
     """工作线程类，用于在后台执行API调用"""
