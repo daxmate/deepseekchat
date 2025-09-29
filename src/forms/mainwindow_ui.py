@@ -94,7 +94,7 @@ class Ui_MainWindow(object):
         sizePolicy1.setHeightForWidth(self.input_edit.sizePolicy().hasHeightForWidth())
         self.input_edit.setSizePolicy(sizePolicy1)
         self.input_edit.setMinimumSize(QSize(0, 0))
-        self.input_edit.setMaximumSize(QSize(16777215, 16777215))
+        self.input_edit.setMaximumSize(QSize(16777215, 150))
         self.input_edit.setFrameShape(QFrame.Shape.NoFrame)
         self.input_edit.setLineWidth(0)
         self.input_edit.setReadOnly(False)
