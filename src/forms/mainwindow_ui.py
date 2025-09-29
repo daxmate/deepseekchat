@@ -16,9 +16,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtWidgets import (QApplication, QDockWidget, QHBoxLayout, QMainWindow,
-    QMenuBar, QPushButton, QSizePolicy, QSplitter,
-    QStatusBar, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QMainWindow,
+    QMenuBar, QPushButton, QSizePolicy, QStatusBar,
+    QVBoxLayout, QWidget)
 
 from inputeditor import InputEditor
 from listview import ListView
@@ -30,54 +30,84 @@ class Ui_MainWindow(object):
         MainWindow.resize(1000, 800)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.verticalLayout = QVBoxLayout(self.centralwidget)
+        self.horizontalLayout_2 = QHBoxLayout(self.centralwidget)
+        self.horizontalLayout_2.setSpacing(0)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.left_column = QWidget(self.centralwidget)
+        self.left_column.setObjectName(u"left_column")
+        self.verticalLayout = QVBoxLayout(self.left_column)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.splitter = QSplitter(self.centralwidget)
-        self.splitter.setObjectName(u"splitter")
-        self.splitter.setOrientation(Qt.Orientation.Vertical)
-        self.webEngineView = QWebEngineView(self.splitter)
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.historyListView = ListView(self.left_column)
+        self.historyListView.setObjectName(u"historyListView")
+        self.historyListView.setFrameShape(QFrame.Shape.NoFrame)
+        self.historyListView.setFrameShadow(QFrame.Shadow.Sunken)
+        self.historyListView.setLineWidth(0)
+
+        self.verticalLayout.addWidget(self.historyListView)
+
+        self.newchat_btn = QPushButton(self.left_column)
+        self.newchat_btn.setObjectName(u"newchat_btn")
+
+        self.verticalLayout.addWidget(self.newchat_btn)
+
+
+        self.horizontalLayout_2.addWidget(self.left_column)
+
+        self.main_area = QWidget(self.centralwidget)
+        self.main_area.setObjectName(u"main_area")
+        self.verticalLayout_3 = QVBoxLayout(self.main_area)
+        self.verticalLayout_3.setSpacing(0)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.webEngineView = QWebEngineView(self.main_area)
         self.webEngineView.setObjectName(u"webEngineView")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(9)
+        sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.webEngineView.sizePolicy().hasHeightForWidth())
         self.webEngineView.setSizePolicy(sizePolicy)
         self.webEngineView.setUrl(QUrl(u"about:blank"))
-        self.splitter.addWidget(self.webEngineView)
-        self.layoutWidget = QWidget(self.splitter)
-        self.layoutWidget.setObjectName(u"layoutWidget")
-        self.horizontalLayout = QHBoxLayout(self.layoutWidget)
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
-        self.input_edit = InputEditor(self.layoutWidget)
+
+        self.verticalLayout_3.addWidget(self.webEngineView)
+
+        self.line = QFrame(self.main_area)
+        self.line.setObjectName(u"line")
+        self.line.setFrameShape(QFrame.Shape.HLine)
+        self.line.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.verticalLayout_3.addWidget(self.line)
+
+        self.line_2 = QFrame(self.main_area)
+        self.line_2.setObjectName(u"line_2")
+        self.line_2.setFrameShape(QFrame.Shape.VLine)
+        self.line_2.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.verticalLayout_3.addWidget(self.line_2)
+
+        self.input_edit = InputEditor(self.main_area)
         self.input_edit.setObjectName(u"input_edit")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(1)
+        sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.input_edit.sizePolicy().hasHeightForWidth())
         self.input_edit.setSizePolicy(sizePolicy1)
-        self.input_edit.setMinimumSize(QSize(0, 100))
-        self.input_edit.setMaximumSize(QSize(16777215, 160))
+        self.input_edit.setMinimumSize(QSize(0, 0))
+        self.input_edit.setMaximumSize(QSize(16777215, 16777215))
+        self.input_edit.setFrameShape(QFrame.Shape.NoFrame)
+        self.input_edit.setLineWidth(0)
         self.input_edit.setReadOnly(False)
 
-        self.horizontalLayout.addWidget(self.input_edit)
+        self.verticalLayout_3.addWidget(self.input_edit)
 
-        self.send_button = QPushButton(self.layoutWidget)
-        self.send_button.setObjectName(u"send_button")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Maximum)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(1)
-        sizePolicy2.setHeightForWidth(self.send_button.sizePolicy().hasHeightForWidth())
-        self.send_button.setSizePolicy(sizePolicy2)
-        self.send_button.setMinimumSize(QSize(0, 100))
-        self.send_button.setMaximumSize(QSize(16777215, 160))
+        self.verticalLayout_3.setStretch(0, 10)
+        self.verticalLayout_3.setStretch(3, 1)
 
-        self.horizontalLayout.addWidget(self.send_button)
+        self.horizontalLayout_2.addWidget(self.main_area)
 
-        self.splitter.addWidget(self.layoutWidget)
-
-        self.verticalLayout.addWidget(self.splitter)
-
+        self.horizontalLayout_2.setStretch(0, 1)
+        self.horizontalLayout_2.setStretch(1, 3)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
@@ -87,24 +117,6 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName(u"statusbar")
         self.statusbar.setMouseTracking(True)
         MainWindow.setStatusBar(self.statusbar)
-        self.dockWidget_2 = QDockWidget(MainWindow)
-        self.dockWidget_2.setObjectName(u"dockWidget_2")
-        self.dockWidgetContents_2 = QWidget()
-        self.dockWidgetContents_2.setObjectName(u"dockWidgetContents_2")
-        self.verticalLayout_2 = QVBoxLayout(self.dockWidgetContents_2)
-        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.historyListView = ListView(self.dockWidgetContents_2)
-        self.historyListView.setObjectName(u"historyListView")
-
-        self.verticalLayout_2.addWidget(self.historyListView)
-
-        self.newchat_btn = QPushButton(self.dockWidgetContents_2)
-        self.newchat_btn.setObjectName(u"newchat_btn")
-
-        self.verticalLayout_2.addWidget(self.newchat_btn)
-
-        self.dockWidget_2.setWidget(self.dockWidgetContents_2)
-        MainWindow.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.dockWidget_2)
 
         self.retranslateUi(MainWindow)
 
@@ -113,8 +125,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"DeepSeek\u90ae\u4ef6\u52a9\u624b", None))
-        self.input_edit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\"\u2191\u2193\" to navigate input history \"\u21e7\u21a9\" to insert newline \"\u21a9\" to send", None))
-        self.send_button.setText(QCoreApplication.translate("MainWindow", u"\u53d1\u9001", None))
         self.newchat_btn.setText(QCoreApplication.translate("MainWindow", u"New Chat", None))
+        self.input_edit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\"\u2191\u2193\" to navigate input history \"\u21e7\u21a9\" to insert newline \"\u21a9\" to send", None))
     # retranslateUi
 

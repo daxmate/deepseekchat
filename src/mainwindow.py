@@ -62,8 +62,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         连接信号槽
         """
-        self.send_button.clicked.connect(self.on_send_button_clicked)
-        self.input_edit.send_requested.connect(self.on_send_button_clicked)
+        self.input_edit.send_requested.connect(self.on_send_messages)
         self.client.message_updated_signal.connect(self.update_webengine_view)
         self.db_manager.gen_title_request.connect(self.client.gen_title)
         self.client.title_ready_signal.connect(self.db_manager.update_title)
@@ -153,17 +152,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.last_message = message
         self.statusBar().showMessage(message, 5000)
 
-    def on_send_button_clicked(self):
+    def on_send_messages(self):
         """
         发送按钮点击时的槽函数
         """
-        self.send_button.setEnabled(False)
         content = self.input_edit.toPlainText() + "\n"
         self.client.messages.append({"role": "user", "content": content})
         self.update_webengine_view()
         self.input_edit.clear()
         self.client.send_messages()
-        self.send_button.setEnabled(True)
 
     def closeEvent(self, event):
         """
