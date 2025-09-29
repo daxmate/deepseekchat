@@ -10,7 +10,7 @@ from PySide6.QtCore import (
     QEvent,
 )
 from PySide6.QtGui import QMouseEvent, QAction
-from src.forms.mainwindow_ui import Ui_MainWindow
+from forms.mainwindow_ui import Ui_MainWindow
 from preferences import Preferences
 import time
 from typing import cast
@@ -18,6 +18,8 @@ from database import DatabaseManager
 from chatrobot import ChatRobot
 from markdown_it import MarkdownIt
 from markdown_it.presets import gfm_like
+
+from resources_handler import get_resource
 
 
 def setup_markdown():
@@ -89,13 +91,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             QApplication.processEvents()
 
     def init_webengine(self):
-        with open('src/template.html', 'r') as f:
-            html_template = f.read()
-            html_template = html_template.replace("{content}", self.convert_markdown_to_html(self.client.messages[0]))
-            self.webEngineView.setHtml(html_template)
+        html_template = get_resource(":/templates/template.html")
+        html_template = html_template.replace("{content}", self.convert_markdown_to_html(self.client.messages[0]))
+        self.webEngineView.setHtml(html_template)
 
-        with open('src/deepseek.js', 'r') as f:
-            self.js_code = f.read()
+        self.js_code = get_resource(":/templates/deepseek.js")
 
     def convert_markdown_to_html(self, message: dict) -> str:
         """

@@ -1,5 +1,4 @@
 #! ./.venv/bin/python3
-from pyexpat.errors import messages
 
 import sys
 
@@ -8,8 +7,8 @@ from PySide6.QtWidgets import QApplication
 from mainwindow import MainWindow
 from PySide6.QtCore import QLibraryInfo, QTranslator
 
-from resources.dsc import qt_resource_data
-
+from resources_handler import get_resource
+from resources import qt_resource_data
 
 def main():
     app = QApplication(sys.argv)
@@ -29,9 +28,8 @@ def main():
     if ok:
         app.installTranslator(webengine_translator)
     # 加载样式表
-    with open("src/style.qss", "r") as f:
-        style = f.read()
-        app.setStyleSheet(style)
+    stylesheet = get_resource(":/styles/style.qss")
+    app.setStyleSheet(stylesheet)
     win = MainWindow()
     win.show()
     sys.exit(app.exec())
