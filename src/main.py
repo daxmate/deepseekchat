@@ -28,6 +28,10 @@ def main():
     ok = webengine_translator.load('qtwebengine_zh_CN', translation_path)
     if ok:
         app.installTranslator(webengine_translator)
+    # 加载样式表
+    with open("src/style.qss", "r") as f:
+        style = f.read()
+        app.setStyleSheet(style)
     win = MainWindow()
     win.show()
     sys.exit(app.exec())

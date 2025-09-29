@@ -1,0 +1,19 @@
+    ListView {
+        background-color: #f0f0f0;
+        alternate-background-color: #e0e0e0;
+        font-size: 14px;
+        border-radius: 4px;
+        padding: 5px;
+    }
+    ListView::item {
+        height: 40px;
+        padding: 8px;
+        border-bottom: 1px solid #d0d0d0;
+    }
+    ListView::item:selected {
+        background-color: #4a90e2;
+        color: white;
+    }
+    ListView::item:hover {
+        background-color: #b8daff;
+    }
